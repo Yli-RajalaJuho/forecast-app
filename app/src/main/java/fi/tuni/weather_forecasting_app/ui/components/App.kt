@@ -1,4 +1,4 @@
-package fi.tuni.weather_forecasting_app.composables
+package fi.tuni.weather_forecasting_app.ui.components
 
 import android.Manifest
 import android.os.Build
@@ -9,7 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import fi.tuni.weather_forecasting_app.composables.screens.HomeScreen
+import fi.tuni.weather_forecasting_app.ui.components.screens.HomeScreen
 
 @Composable
 fun App() {

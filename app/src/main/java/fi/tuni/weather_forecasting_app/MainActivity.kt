@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import fi.tuni.weather_forecasting_app.composables.App
+import fi.tuni.weather_forecasting_app.ui.components.App
 import fi.tuni.weather_forecasting_app.ui.theme.Weather_forecasting_appTheme
 
 class MainActivity : ComponentActivity() {
