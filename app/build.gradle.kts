@@ -66,4 +66,13 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
+    // Viewmodel
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    // Location services
+    implementation(libs.play.services.location)
+    // Livedata
+    implementation(libs.androidx.lifecycle.livedata.ktx)
 }
