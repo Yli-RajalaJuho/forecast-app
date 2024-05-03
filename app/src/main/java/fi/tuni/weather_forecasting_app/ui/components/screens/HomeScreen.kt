@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import fi.tuni.weather_forecasting_app.composables.ui_parts.WeekDayForecast
 
 @Composable
 fun HomeScreen(navController : NavController) {
@@ -17,6 +18,6 @@ fun HomeScreen(navController : NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Welcome to my weather forecasting app!")
+        WeekDayForecast()
     }
 }
