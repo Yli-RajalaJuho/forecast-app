@@ -1,75 +1,33 @@
 package fi.tuni.weather_forecasting_app.viewmodels
 
+import android.app.Application
+import android.location.Location
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import fi.tuni.weather_forecasting_app.models.SimplifiedWeatherData
-import fi.tuni.weather_forecasting_app.models.WeatherHourly
 import fi.tuni.weather_forecasting_app.repositories.ForecastRepository
+import fi.tuni.weather_forecasting_app.repositories.LocationClient
+import fi.tuni.weather_forecasting_app.repositories.LocationRepository
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
-class WeatherDataViewModel: ViewModel() {
+class WeatherDataViewModel(application: Application): AndroidViewModel(application) {
 
-    private val _initialWeatherData: MutableState<List<SimplifiedWeatherData>?> = mutableStateOf(null)
-    val initialWeatherData: List<SimplifiedWeatherData> get() = _initialWeatherData.value ?: emptyList()
+    private val locationRepository = LocationRepository(application)
 
-    private fun generateSimplifiedData(weatherData: WeatherHourly?): List<SimplifiedWeatherData>? {
-        val timeStamps: List<String>? = weatherData?.time
-        val temperatures: List<Double>? = weatherData?.temperature_2m
-
-        if (timeStamps != null && temperatures != null) {
-            val dates = parseDates(timeStamps)
-            val hours = parseHours(timeStamps)
-
-            val myList = mutableListOf<SimplifiedWeatherData>()
-
-            for (i in timeStamps.indices) {
-                myList.add(SimplifiedWeatherData(date = dates[i], hour = hours[i], temperature = temperatures[i]))
-            }
-
-            return myList
-        }
-
-        return null
-    }
-
-    private fun parseDates(timeStamps: List<String>?): List<String> {
-        val formatter: DateFormat = SimpleDateFormat.getDateInstance()
-        val parser = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-
-        val dateList = mutableListOf<String>()
-
-        timeStamps?.forEach() {
-            val date: Date = parser.parse(it.substringBefore("T")) ?: Date()
-            val parsed = formatter.format(date)
-            dateList.add(parsed)
-        }
-
-        return dateList
-    }
-
-    private fun parseHours(timeStamps: List<String>?): List<String> {
-        val hoursList = mutableListOf<String>()
-
-        timeStamps?.forEach() {
-            val parsed = it.substringAfter("T")
-            hoursList.add(parsed)
-        }
-
-        return hoursList
-    }
+    private val _forecastData: MutableState<List<SimplifiedWeatherData>?> = mutableStateOf(null)
+    val forecastData: List<SimplifiedWeatherData> get() = _forecastData.value ?: emptyList()
 
     fun getHourlyData(date: String): List<SimplifiedWeatherData> {
         val dataForDay: MutableList<SimplifiedWeatherData> = mutableListOf<SimplifiedWeatherData>()
 
-        _initialWeatherData.value?.forEach() {
+        _forecastData.value?.forEach() {
             if (it.date == date) {
                 dataForDay.add(it)
             }
@@ -78,15 +36,44 @@ class WeatherDataViewModel: ViewModel() {
         return dataForDay
     }
 
-    init {
+    fun refreshWeatherData() {
         viewModelScope.launch {
+            val currentLocation: Location = fetchLocation()
+
             try {
+                // fetch weather data with the location
                 val weatherData = ForecastRepository.service.getInitialWeatherForecast(
-                    50.00, 50.00, "temperature_2m", 7, 14).hourly
-                _initialWeatherData.value = generateSimplifiedData(weatherData)
+                    currentLocation.latitude, currentLocation.longitude, "temperature_2m", 7, 14).hourly
+                _forecastData.value = ForecastRepository.generateSimplifiedData(weatherData)
             } catch (e: HttpException) {
-                Log.d("ERROR", e.response()?.errorBody()?.string() ?: "")
+                Log.d("HTTP ERROR", e.response()?.errorBody()?.string() ?: "")
             }
         }
+    }
+
+    private suspend fun fetchLocation(): Location {
+        return withContext(Dispatchers.Default) {
+            val currentLocationDeferred = CompletableDeferred<Location>()
+
+            viewModelScope.launch {
+                try {
+                    locationRepository.startLocationUpdates { location ->
+                        if (location != null) {
+                            locationRepository.stopLocationUpdates()
+                            currentLocationDeferred.complete(location)
+                        }
+                    }
+                } catch (e: LocationClient.LocationException) {
+                    e.message?.let { Log.d("LOCATION ERROR", it) }
+                    currentLocationDeferred.completeExceptionally(e)
+                }
+            }
+
+            currentLocationDeferred.await()
+        }
+    }
+
+    init {
+        refreshWeatherData()
     }
 }
