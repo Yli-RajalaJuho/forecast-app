@@ -36,10 +36,10 @@ class WeekDayViewModel: ViewModel() {
 
     init {
         viewModelScope.launch {
-            val format: DateFormat = SimpleDateFormat.getDateInstance();
-            val calendar: Calendar = Calendar.getInstance();
-            calendar.firstDayOfWeek = Calendar.MONDAY;
-            calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+            val format: DateFormat = SimpleDateFormat.getDateInstance()
+            val calendar: Calendar = Calendar.getInstance()
+            calendar.firstDayOfWeek = Calendar.MONDAY
+            calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
 
             val weekList = WeekList().week
 

@@ -1,6 +1,5 @@
 package fi.tuni.weather_forecasting_app.ui.components.ui_parts
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 
 import androidx.compose.foundation.clickable
@@ -10,11 +9,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -24,7 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import fi.tuni.weather_forecasting_app.viewmodels.WeatherDataViewModel
 import fi.tuni.weather_forecasting_app.viewmodels.WeekDayViewModel
+import kotlinx.coroutines.delay
 import kotlin.math.pow
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -32,11 +36,11 @@ import kotlin.math.pow
 fun ForecastOfTheWeek(navController: NavController) {
 
     // model for week days
-    val viewModel : WeekDayViewModel = viewModel()
-    val currentWeek = viewModel.currentWeek
+    val weekViewModel : WeekDayViewModel = viewModel()
+    val currentWeek = weekViewModel.currentWeek
 
     // current days index for pager states initialization
-    val currentDayIndex: Int = viewModel.getCurrentDayIndex()
+    val currentDayIndex: Int = weekViewModel.getCurrentDayIndex()
 
     // current index of the carousel
     val pagerState = rememberPagerState(initialPage = currentDayIndex) { currentWeek.size }
@@ -53,7 +57,7 @@ fun ForecastOfTheWeek(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize(),
             verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally,
+            // horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
             // header
@@ -70,7 +74,9 @@ fun ForecastOfTheWeek(navController: NavController) {
                 Text(
                     text = currentWeek[day].date,
                     fontSize = 12.sp,
-                    modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp),
                     textAlign = TextAlign.Center,
                 )
 
@@ -109,6 +115,8 @@ fun ForecastOfTheWeek(navController: NavController) {
                 )
             }
             Divider()
+
+            CurrentDayForecast(currentWeek[day].date, pagerState.currentPageOffsetFraction)
         }
     }
 }
