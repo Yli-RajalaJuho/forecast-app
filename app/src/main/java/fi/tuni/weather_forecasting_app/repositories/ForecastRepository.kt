@@ -53,9 +53,11 @@ object ForecastRepository {
 
             for (i in timeStamps!!.indices) {
                 var condition = ""
+                var backgroundImage = 0
                 for (code in initialWeatherCodes) {
                     if (weatherCodes!![i] == code.code) {
                         condition = code.conditions
+                        backgroundImage = code.backgroundImage
                     }
                 }
                 myList.add(
@@ -63,7 +65,8 @@ object ForecastRepository {
                         date = dates[i],
                         hour = hours[i],
                         temperature = temperatures!![i],
-                        weatherConditions = condition
+                        weatherConditions = condition,
+                        backgroundImage = backgroundImage
                     )
                 )
             }
