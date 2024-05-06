@@ -16,8 +16,9 @@ fun WeeksWeatherScreen(
 
     // Determine which week to display based on the week parameter
     val displayWeek = when (week) {
-        "previousWeek" -> weekViewModel.previousWeek
-        "nextWeek" -> weekViewModel.nextWeek
+        "Previous" -> weekViewModel.previousWeek
+        "Next" -> weekViewModel.nextWeek
+        "Current" -> weekViewModel.currentWeek
         else -> weekViewModel.currentWeek
     }
 
