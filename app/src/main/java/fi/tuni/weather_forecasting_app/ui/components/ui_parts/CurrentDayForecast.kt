@@ -1,17 +1,20 @@
 package fi.tuni.weather_forecasting_app.ui.components.ui_parts
 
-import androidx.compose.animation.expandVertically
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -22,33 +25,57 @@ fun CurrentDayForecast(date: String, pageOffsetFraction: Float) {
 
     // model for forecast
     val forecastViewModel : WeatherDataViewModel = viewModel()
-    val hourlyData =  forecastViewModel.getHourlyData(date)
+    val isRefreshing = remember { forecastViewModel.isRefreshing }
 
-    if (hourlyData.isEmpty() || pageOffsetFraction != 0F) {
+    var hourlyData = remember(forecastViewModel.forecastData) {
+        forecastViewModel.getHourlyData(date)
+    }
+
+    // Call getHourlyData when the data inside viewmodel changes
+    LaunchedEffect(forecastViewModel.forecastData) {
+        hourlyData = forecastViewModel.getHourlyData(date)
+    }
+
+    if (isRefreshing.value) {
         // show loading
         Text(text = "Loading...", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
     } else {
-        LazyColumn {
-            items(hourlyData.size) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(30.dp)
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.Start,
-                        text = hourlyData[it].hour,
-                    )
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        text = "${hourlyData[it].temperature} °C"
-                    )
+        Box {
+            LazyColumn {
+                items(hourlyData.size) {
+                    Box(modifier = Modifier.padding(30.dp)) {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            textAlign = TextAlign.Start,
+                            text = hourlyData[it].hour,
+                        )
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            text = "${hourlyData[it].temperature} °C"
+                        )
+                    }
+                    Divider(modifier = Modifier.padding(horizontal = 20.dp))
                 }
-                Divider(modifier = Modifier.padding(horizontal = 20.dp))
+            }
+
+            // Clickable button
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 20.dp)
+            ) {
+                Button(
+                    onClick = {
+                        forecastViewModel.refreshWeatherData()
+                    },
+                    modifier = Modifier.align(Alignment.Center)
+                ) {
+                    Text(text = "Refresh", color = Color.White)
+                }
             }
         }
     }

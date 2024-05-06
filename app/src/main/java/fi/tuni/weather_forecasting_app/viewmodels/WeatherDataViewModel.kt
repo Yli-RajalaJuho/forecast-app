@@ -24,6 +24,9 @@ class WeatherDataViewModel(application: Application): AndroidViewModel(applicati
     private val _forecastData: MutableState<List<SimplifiedWeatherData>?> = mutableStateOf(null)
     val forecastData: List<SimplifiedWeatherData> get() = _forecastData.value ?: emptyList()
 
+    private val _isRefreshing = mutableStateOf(false)
+    val isRefreshing get() = _isRefreshing
+
     fun getHourlyData(date: String): List<SimplifiedWeatherData> {
         val dataForDay: MutableList<SimplifiedWeatherData> = mutableListOf<SimplifiedWeatherData>()
 
@@ -37,6 +40,15 @@ class WeatherDataViewModel(application: Application): AndroidViewModel(applicati
     }
 
     fun refreshWeatherData() {
+        if (_isRefreshing.value) {
+            Log.d("WEATHER", "Fetching already in progress!")
+            return
+        }
+
+        // If process is not already active
+        Log.d("WEATHER", "Starting to fetch weather")
+        _isRefreshing.value = true
+
         viewModelScope.launch {
             val currentLocation: Location = fetchLocation()
 
@@ -47,6 +59,9 @@ class WeatherDataViewModel(application: Application): AndroidViewModel(applicati
                 _forecastData.value = ForecastRepository.generateSimplifiedData(weatherData)
             } catch (e: HttpException) {
                 Log.d("HTTP ERROR", e.response()?.errorBody()?.string() ?: "")
+            } finally {
+                Log.d("WEATHER", "Weather fetching complete")
+                _isRefreshing.value = false
             }
         }
     }
