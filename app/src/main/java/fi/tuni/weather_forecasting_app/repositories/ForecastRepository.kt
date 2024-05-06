@@ -1,6 +1,8 @@
 package fi.tuni.weather_forecasting_app.repositories
 
 import fi.tuni.weather_forecasting_app.models.SimplifiedWeatherData
+import fi.tuni.weather_forecasting_app.models.WeatherCode
+import fi.tuni.weather_forecasting_app.models.WeatherCodeList
 import fi.tuni.weather_forecasting_app.models.WeatherData
 import fi.tuni.weather_forecasting_app.models.WeatherHourly
 import retrofit2.Retrofit
@@ -24,6 +26,8 @@ interface WeatherApiService {
 }
 
 object ForecastRepository {
+    private val initialWeatherCodes = WeatherCodeList().weatherCodeList
+
     private val retrofit = Retrofit.Builder()
         .baseUrl("https://api.open-meteo.com/v1/")
         .addConverterFactory(GsonConverterFactory.create())
@@ -39,15 +43,29 @@ object ForecastRepository {
     fun generateSimplifiedData(weatherData: WeatherHourly?): List<SimplifiedWeatherData>? {
         val timeStamps: List<String>? = weatherData?.time
         val temperatures: List<Double>? = weatherData?.temperature_2m
+        val weatherCodes: List<Int>? = weatherData?.weather_code
 
-        if (timeStamps != null && temperatures != null) {
+        if (weatherData != null) {
             val dates = parseDates(timeStamps)
             val hours = parseHours(timeStamps)
 
             val myList = mutableListOf<SimplifiedWeatherData>()
 
-            for (i in timeStamps.indices) {
-                myList.add(SimplifiedWeatherData(date = dates[i], hour = hours[i], temperature = temperatures[i]))
+            for (i in timeStamps!!.indices) {
+                var condition = ""
+                for (code in initialWeatherCodes) {
+                    if (weatherCodes!![i] == code.code) {
+                        condition = code.conditions
+                    }
+                }
+                myList.add(
+                    SimplifiedWeatherData(
+                        date = dates[i],
+                        hour = hours[i],
+                        temperature = temperatures!![i],
+                        weatherConditions = condition
+                    )
+                )
             }
 
             return myList

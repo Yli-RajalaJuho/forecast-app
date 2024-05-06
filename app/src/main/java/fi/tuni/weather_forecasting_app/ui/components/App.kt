@@ -6,10 +6,15 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import fi.tuni.weather_forecasting_app.models.Day
 import fi.tuni.weather_forecasting_app.ui.components.screens.HomeScreen
+import fi.tuni.weather_forecasting_app.ui.components.screens.WeeksWeatherScreen
+import fi.tuni.weather_forecasting_app.viewmodels.WeatherDataViewModel
+import fi.tuni.weather_forecasting_app.viewmodels.WeekDayViewModel
 
 @Composable
 fun App() {
@@ -49,10 +54,21 @@ fun App() {
 
     val navController = rememberNavController()
 
+    // Remember the view models outside of the composable
+    val weekViewModel: WeekDayViewModel = viewModel()
+    val weatherDataViewModel: WeatherDataViewModel = viewModel()
+
     NavHost(navController = navController, startDestination = "home-screen") {
         composable("home-screen") {
             // Navigate to home screen
             HomeScreen(navController)
+        }
+        composable("weeks-weather-screen/{week}") {backStackEntry ->
+
+            val week = backStackEntry.arguments?.getString("week")
+
+            // Navigate to weeks weather screen with the week and the view models
+            WeeksWeatherScreen(navController, weekViewModel, weatherDataViewModel, week)
         }
     }
 }

@@ -21,9 +21,11 @@ class WeatherDataViewModel(application: Application): AndroidViewModel(applicati
 
     private val locationRepository = LocationRepository(application)
 
+    // Current forecast data
     private val _forecastData: MutableState<List<SimplifiedWeatherData>?> = mutableStateOf(null)
     val forecastData: List<SimplifiedWeatherData> get() = _forecastData.value ?: emptyList()
 
+    // Refreshing state
     private val _isRefreshing = mutableStateOf(false)
     val isRefreshing get() = _isRefreshing
 
@@ -55,7 +57,7 @@ class WeatherDataViewModel(application: Application): AndroidViewModel(applicati
             try {
                 // fetch weather data with the location
                 val weatherData = ForecastRepository.service.getInitialWeatherForecast(
-                    currentLocation.latitude, currentLocation.longitude, "temperature_2m", 7, 14).hourly
+                    currentLocation.latitude, currentLocation.longitude, "temperature_2m,weather_code", 7, 14).hourly
                 _forecastData.value = ForecastRepository.generateSimplifiedData(weatherData)
             } catch (e: HttpException) {
                 Log.d("HTTP ERROR", e.response()?.errorBody()?.string() ?: "")
@@ -89,6 +91,7 @@ class WeatherDataViewModel(application: Application): AndroidViewModel(applicati
     }
 
     init {
+        // Initial weather based on current location
         refreshWeatherData()
     }
 }

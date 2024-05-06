@@ -3,44 +3,43 @@ package fi.tuni.weather_forecasting_app.ui.components.ui_parts
 import androidx.compose.foundation.ExperimentalFoundationApi
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import fi.tuni.weather_forecasting_app.models.Day
+import fi.tuni.weather_forecasting_app.viewmodels.WeatherDataViewModel
 import fi.tuni.weather_forecasting_app.viewmodels.WeekDayViewModel
 import kotlin.math.pow
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ForecastOfTheWeek(navController: NavController) {
-
-    // model for week days
-    val weekViewModel : WeekDayViewModel = viewModel()
-    val currentWeek = weekViewModel.currentWeek
+fun ForecastOfTheWeek(
+    week: List<Day>,
+    weekViewModel: WeekDayViewModel,
+    weatherDataViewModel: WeatherDataViewModel
+) {
 
     // current days index for pager states initialization
     val currentDayIndex: Int = weekViewModel.getCurrentDayIndex()
 
     // current index of the carousel
-    val pagerState = rememberPagerState(initialPage = currentDayIndex) { currentWeek.size }
+    val pagerState = rememberPagerState(initialPage = currentDayIndex) { week.size }
 
     fun getOpacity(): Float {
         var offset = pagerState.currentPageOffsetFraction
@@ -58,17 +57,11 @@ fun ForecastOfTheWeek(navController: NavController) {
         ) {
             // header
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(
-                        onClick = {
-
-                        }
-                    )
+                modifier = Modifier.fillMaxWidth()
             ) {
                 // date
                 Text(
-                    text = currentWeek[day].date,
+                    text = week[day].date,
                     fontSize = 12.sp,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -107,12 +100,12 @@ fun ForecastOfTheWeek(navController: NavController) {
                         .padding(30.dp),
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    text = currentWeek[day].name
+                    text = week[day].name
                 )
             }
             Divider()
 
-            CurrentDayForecast(currentWeek[day].date, pagerState.currentPageOffsetFraction)
+            CurrentDayForecast(week[day].date, weatherDataViewModel)
 
         }
     }
