@@ -10,12 +10,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import fi.tuni.weather_forecasting_app.ui.components.ui_parts.ForecastOfTheWeek
 import fi.tuni.weather_forecasting_app.ui.components.ui_parts.WeekSelector
+import fi.tuni.weather_forecasting_app.ui.theme.IndigoGradientBackground
 import fi.tuni.weather_forecasting_app.viewmodels.WeekDayViewModel
 
 @Composable
 fun HomeScreen(navController : NavController) {
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        WeekSelector(navController)
+    IndigoGradientBackground {
+        Column(modifier = Modifier.fillMaxSize()) {
+            WeekSelector(navController)
+
+        }
     }
 }

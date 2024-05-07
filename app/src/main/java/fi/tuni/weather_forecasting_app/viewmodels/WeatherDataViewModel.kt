@@ -57,7 +57,7 @@ class WeatherDataViewModel(application: Application): AndroidViewModel(applicati
             try {
                 // fetch weather data with the location
                 val weatherData = ForecastRepository.service.getInitialWeatherForecast(
-                    currentLocation.latitude, currentLocation.longitude, "temperature_2m,weather_code", 7, 14).hourly
+                    currentLocation.latitude, currentLocation.longitude, "temperature_2m,weather_code", 14, 14).hourly
                 _forecastData.value = ForecastRepository.generateSimplifiedData(weatherData)
             } catch (e: HttpException) {
                 Log.d("HTTP ERROR", e.response()?.errorBody()?.string() ?: "")

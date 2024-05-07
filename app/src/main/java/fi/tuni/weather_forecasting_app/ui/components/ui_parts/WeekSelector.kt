@@ -1,6 +1,7 @@
 package fi.tuni.weather_forecasting_app.ui.components.ui_parts
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,9 +12,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -36,6 +40,9 @@ fun WeekSelector(navController: NavController) {
         ) {
             Box(
                 modifier = Modifier.fillMaxWidth()
+                    .background(color = Color.Transparent.compositeOver(
+                        MaterialTheme.colorScheme.primaryContainer)
+                    )
                     .clickable {
                     navController.navigate("weeks-weather-screen/${weeks[week]}")
                 }
@@ -47,6 +54,8 @@ fun WeekSelector(navController: NavController) {
                         .fillMaxWidth()
                         .padding(top = 12.dp),
                     textAlign = TextAlign.Center,
+                    color = Color.Transparent
+                        .compositeOver(MaterialTheme.colorScheme.onPrimaryContainer)
                 )
                 Text(
                     modifier = Modifier
@@ -54,10 +63,14 @@ fun WeekSelector(navController: NavController) {
                         .padding(30.dp),
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    text = "${weeks[week]} week"
+                    text = "${weeks[week]} week",
+                    color = Color.Transparent
+                        .compositeOver(MaterialTheme.colorScheme.onPrimaryContainer)
                 )
             }
-            Divider()
+            Divider(color = Color.Transparent.compositeOver(
+                MaterialTheme.colorScheme.onSurface)
+            )
         }
     }
 }
