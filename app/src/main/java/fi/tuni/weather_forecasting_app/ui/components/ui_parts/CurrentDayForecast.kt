@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import fi.tuni.weather_forecasting_app.ui.theme.IndigoGradientBackground
@@ -80,12 +81,14 @@ fun CurrentDayForecast(date: String, opacity: Float, forecastViewModel: WeatherD
                                 ) {
                                     Text(
                                         modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.Justify,
+                                        textAlign = TextAlign.Center,
+                                        fontWeight = FontWeight.Bold,
                                         text = hourlyData[it].weatherConditions
                                     )
                                     Text(
                                         modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.Justify,
+                                        textAlign = TextAlign.Center,
+                                        fontWeight = FontWeight.Bold,
                                         text = "${hourlyData[it].temperature} °C"
                                     )
                                 }

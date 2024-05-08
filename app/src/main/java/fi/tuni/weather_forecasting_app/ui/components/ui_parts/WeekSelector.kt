@@ -15,6 +15,9 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
@@ -32,6 +35,21 @@ fun WeekSelector(navController: NavController) {
 
     // current index of the carousel
     val pagerState = rememberPagerState(initialPage = weeks.size/2) { weeks.size }
+
+    // for changing the pager state with a button
+    val scrollDirection = remember { mutableStateOf(0) }
+
+    LaunchedEffect(scrollDirection.value) {
+        if (scrollDirection.value < 0) {
+            pagerState.animateScrollToPage(pagerState.currentPage - 1)
+        }
+
+        if (scrollDirection.value > 0) {
+            pagerState.animateScrollToPage(pagerState.currentPage + 1)
+        }
+
+        scrollDirection.value = 0
+    }
 
     HorizontalPager(state = pagerState) { week ->
         Column(

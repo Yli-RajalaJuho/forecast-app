@@ -16,7 +16,7 @@ import java.util.Locale
 
 interface WeatherApiService {
     @GET("forecast")
-    suspend fun getInitialWeatherForecast(
+    suspend fun getWeatherForecast(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
         @Query("hourly") hourly: String,
@@ -35,9 +35,9 @@ object ForecastRepository {
 
     val service: WeatherApiService = retrofit.create(WeatherApiService::class.java)
 
-    suspend fun getInitialWeatherForecast(
+    suspend fun getWeatherForecast(
         latitude: Double, longitude: Double, hourly: String, past: Int, forecast: Int): WeatherData {
-        return service.getInitialWeatherForecast(latitude, longitude, hourly, past, forecast)
+        return service.getWeatherForecast(latitude, longitude, hourly, past, forecast)
     }
 
     fun generateSimplifiedData(weatherData: WeatherHourly?): List<SimplifiedWeatherData>? {
@@ -45,13 +45,17 @@ object ForecastRepository {
         val temperatures: List<Double>? = weatherData?.temperature_2m
         val weatherCodes: List<Int>? = weatherData?.weather_code
 
+        // If there is no data from the api then return null
         if (weatherData != null) {
             val dates = parseDates(timeStamps)
             val hours = parseHours(timeStamps)
 
             val myList = mutableListOf<SimplifiedWeatherData>()
 
+            // Iterate over all time stamps
             for (i in timeStamps!!.indices) {
+
+                // Fetch data related to the weather codes for the current time stamp
                 var condition = ""
                 var backgroundImage = 0
                 for (code in initialWeatherCodes) {
@@ -60,6 +64,8 @@ object ForecastRepository {
                         backgroundImage = code.backgroundImage
                     }
                 }
+
+                // Try to add each new data block to the new list that contains SimplifiedWeatherData
                 myList.add(
                     SimplifiedWeatherData(
                         date = dates[i],
@@ -71,12 +77,14 @@ object ForecastRepository {
                 )
             }
 
+            // finally return the simplified weather data list
             return myList
         }
 
         return null
     }
 
+    // Separate the date from the timestamps and change it into the format used by WeekDayModel
     private fun parseDates(timeStamps: List<String>?): List<String> {
         val formatter: DateFormat = SimpleDateFormat.getDateInstance()
         val parser = SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -92,6 +100,7 @@ object ForecastRepository {
         return dateList
     }
 
+    // Separate the hour/minutes from the timestamps
     private fun parseHours(timeStamps: List<String>?): List<String> {
         val hoursList = mutableListOf<String>()
 

@@ -29,6 +29,7 @@ class WeatherDataViewModel(application: Application): AndroidViewModel(applicati
     private val _isRefreshing = mutableStateOf(false)
     val isRefreshing get() = _isRefreshing
 
+    // Returns a list generated from the forecastData based on given date
     fun getHourlyData(date: String): List<SimplifiedWeatherData> {
         val dataForDay: MutableList<SimplifiedWeatherData> = mutableListOf<SimplifiedWeatherData>()
 
@@ -56,7 +57,7 @@ class WeatherDataViewModel(application: Application): AndroidViewModel(applicati
 
             try {
                 // fetch weather data with the location
-                val weatherData = ForecastRepository.service.getInitialWeatherForecast(
+                val weatherData = ForecastRepository.service.getWeatherForecast(
                     currentLocation.latitude, currentLocation.longitude, "temperature_2m,weather_code", 14, 14).hourly
                 _forecastData.value = ForecastRepository.generateSimplifiedData(weatherData)
             } catch (e: HttpException) {

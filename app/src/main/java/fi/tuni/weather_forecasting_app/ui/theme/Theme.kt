@@ -6,6 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -18,8 +20,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
@@ -45,7 +49,7 @@ private val DarkColorScheme = darkColorScheme(
     onBackground = Grey99,
 
     // border color
-    onSurface = Grey99
+    onSurface = Grey99,
     )
 
 private val LightColorScheme = lightColorScheme(
@@ -72,7 +76,7 @@ private val LightColorScheme = lightColorScheme(
     onBackground = Grey10,
 
     // border color/ Divider
-    onSurface = Grey10
+    onSurface = Grey10,
 
 
     /* Other default colors to override
@@ -92,36 +96,37 @@ private val IndigoGradientDark = Brush.linearGradient(
 
         //Color(0xFFFF0077),
         //Color(0xFFFF66CC),
+        Grey10,
         Purple40,
+        //Color(0xFF8000FF),
         Color(0xff4700b3),
-        Color(0xFF8000FF),
         //Color(0xFFFF6666),
         Grey20,
         //Color(0xff290066),
         //Color(0xFF2D3132),
         Grey10,
         ),
-    start = Offset(800f, -50f),
-    end = Offset(400f, 400f)
+    start = Offset(0f, 800f),
+    end = Offset(800f, 0f)
 )
 
 // for light theme
 private val IndigoGradientLight = Brush.linearGradient(
     colors = listOf(
-        Color(0xFFFFFFFF),
-        Color(0xFFFF6666),
-        //Color(0xFFFF0077),
-        //Color(0xFFFF66CC),
-        Color(0xFF8000FF),
-        //Color(0xff4700b3),
+        Grey99,
         Grey90,
+        //Color(0xFFFFFFFF),
+        Color(0xFFFF6666),
+        Color(0xFFFF0077),
+        Color(0xFFFF66CC),
+        //Color(0xFF8000FF),
+        //Color(0xff4700b3),
         //Color(0xff290066),
         //Color(0xFF2D3132),
-        Grey95,
-        Grey99,
+        Grey99
     ),
-    start = Offset(800f, -50f),
-    end = Offset(400f, 400f)
+    start = Offset(0f, 800f),
+    end = Offset(800f, 0f)
 )
 
 @Composable
@@ -161,15 +166,15 @@ fun Weather_forecasting_appTheme(
 @Composable
 fun IndigoGradientBackground(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable BoxScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit
 ) {
     if (darkTheme) {
-        Box(
+        Column(
             modifier = Modifier.background(IndigoGradientDark),
             content = content
         )
     } else {
-        Box(
+        Column(
             modifier = Modifier.background(IndigoGradientLight),
             content = content
         )
