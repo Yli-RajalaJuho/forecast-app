@@ -1,8 +1,11 @@
 package fi.tuni.weather_forecasting_app.ui.components.screens
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import fi.tuni.weather_forecasting_app.ui.components.ui_parts.ForecastOfTheWeek
+import fi.tuni.weather_forecasting_app.ui.components.ui_parts.NavBar
+import fi.tuni.weather_forecasting_app.ui.theme.IndigoGradientBackground
 import fi.tuni.weather_forecasting_app.viewmodels.WeatherDataViewModel
 import fi.tuni.weather_forecasting_app.viewmodels.WeekDayViewModel
 
@@ -22,5 +25,10 @@ fun WeeksWeatherScreen(
         else -> weekViewModel.currentWeek
     }
 
-    ForecastOfTheWeek(displayWeek, weekViewModel, weatherDataViewModel)
+    IndigoGradientBackground {
+        Column {
+            NavBar("Forecasts", "$week week")
+            ForecastOfTheWeek(displayWeek, weekViewModel, weatherDataViewModel)
+        }
+    }
 }

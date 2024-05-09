@@ -10,7 +10,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import fi.tuni.weather_forecasting_app.models.Day
 import fi.tuni.weather_forecasting_app.ui.components.screens.HomeScreen
 import fi.tuni.weather_forecasting_app.ui.components.screens.WeeksWeatherScreen
 import fi.tuni.weather_forecasting_app.viewmodels.WeatherDataViewModel
@@ -58,10 +57,14 @@ fun App() {
     val weekViewModel: WeekDayViewModel = viewModel()
     val weatherDataViewModel: WeatherDataViewModel = viewModel()
 
+    // Settings
+    // val settingsViewModel: SettingsViewModel = viewModel()
+
+
     NavHost(navController = navController, startDestination = "home-screen") {
         composable("home-screen") {
             // Navigate to home screen
-            HomeScreen(navController)
+            HomeScreen(navController, weekViewModel, weatherDataViewModel)
         }
         composable("weeks-weather-screen/{week}") {backStackEntry ->
 

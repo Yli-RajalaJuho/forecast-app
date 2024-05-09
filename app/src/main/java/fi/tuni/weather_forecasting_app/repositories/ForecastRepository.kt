@@ -1,14 +1,16 @@
 package fi.tuni.weather_forecasting_app.repositories
 
+import android.util.Log
 import fi.tuni.weather_forecasting_app.models.SimplifiedWeatherData
-import fi.tuni.weather_forecasting_app.models.WeatherCode
 import fi.tuni.weather_forecasting_app.models.WeatherCodeList
-import fi.tuni.weather_forecasting_app.models.WeatherData
+import fi.tuni.weather_forecasting_app.models.WeatherCurrent
+import fi.tuni.weather_forecasting_app.models.WeatherDataResponse
 import fi.tuni.weather_forecasting_app.models.WeatherHourly
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+import java.lang.IndexOutOfBoundsException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -19,14 +21,19 @@ interface WeatherApiService {
     suspend fun getWeatherForecast(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
+        @Query("current") current: String,
         @Query("hourly") hourly: String,
         @Query("past_days") past: Int,
         @Query("forecast_days") forecast: Int
-    ): WeatherData
+    ): WeatherDataResponse
 }
 
 object ForecastRepository {
     private val initialWeatherCodes = WeatherCodeList().weatherCodeList
+
+    // These are used to parse dates
+    private val formatter: DateFormat = SimpleDateFormat.getDateInstance()
+    private val parser = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
     private val retrofit = Retrofit.Builder()
         .baseUrl("https://api.open-meteo.com/v1/")
@@ -36,79 +43,155 @@ object ForecastRepository {
     val service: WeatherApiService = retrofit.create(WeatherApiService::class.java)
 
     suspend fun getWeatherForecast(
-        latitude: Double, longitude: Double, hourly: String, past: Int, forecast: Int): WeatherData {
-        return service.getWeatherForecast(latitude, longitude, hourly, past, forecast)
+        latitude: Double, longitude: Double, current: String, hourly: String, past: Int, forecast: Int): WeatherDataResponse {
+        return service.getWeatherForecast(latitude, longitude, current, hourly, past, forecast)
     }
 
-    fun generateSimplifiedData(weatherData: WeatherHourly?): List<SimplifiedWeatherData>? {
-        val timeStamps: List<String>? = weatherData?.time
-        val temperatures: List<Double>? = weatherData?.temperature_2m
-        val weatherCodes: List<Int>? = weatherData?.weather_code
+    // Generate simplified data object of current data
+    fun generateSimplifiedCurrentData(weatherData: WeatherCurrent?): SimplifiedWeatherData? {
+
+        val timeStamp: String? = weatherData?.time
+        val temperature: Double? = weatherData?.temperature_2m
+        val weatherCode: Int? = weatherData?.weather_code
 
         // If there is no data from the api then return null
         if (weatherData != null) {
-            val dates = parseDates(timeStamps)
-            val hours = parseHours(timeStamps)
 
-            val myList = mutableListOf<SimplifiedWeatherData>()
+            var date: String? = null
+            var hour: String? = null
 
-            // Iterate over all time stamps
-            for (i in timeStamps!!.indices) {
+            // if timestamp isn't null parse date and hour
+            if (timeStamp != null) {
+                // parse date from timestamp
+                val parsed: Date = parser.parse(timeStamp.substringBefore("T")) ?: Date()
+                date = formatter.format(parsed)
 
-                // Fetch data related to the weather codes for the current time stamp
-                var condition = ""
-                var backgroundImage = 0
-                for (code in initialWeatherCodes) {
-                    if (weatherCodes!![i] == code.code) {
-                        condition = code.conditions
-                        backgroundImage = code.backgroundImage
-                    }
-                }
-
-                // Try to add each new data block to the new list that contains SimplifiedWeatherData
-                myList.add(
-                    SimplifiedWeatherData(
-                        date = dates[i],
-                        hour = hours[i],
-                        temperature = temperatures!![i],
-                        weatherConditions = condition,
-                        backgroundImage = backgroundImage
-                    )
-                )
+                // parse hour from timestamp
+                hour = timeStamp.substringAfter("T")
             }
 
-            // finally return the simplified weather data list
-            return myList
+            // Fetch data related to the weather codes for the current time stamp
+            var condition = "No Data" // Initial description for null
+            var backgroundImage = 0 // Initial image for null
+
+            // iterate over the apps own weather code model
+            for (code in initialWeatherCodes) {
+
+                // Check if the code matches and change the image and description accordingly
+                if (weatherCode == code.code) {
+                    condition = code.conditions
+                    backgroundImage = code.backgroundImage
+                }
+            }
+
+            return SimplifiedWeatherData(
+                date = date ?: "No Data",
+                hour = hour ?: "No Data",
+                temperature = temperature ?: 0.0,
+                weatherConditions = condition,
+                backgroundImage = backgroundImage
+            )
         }
 
         return null
     }
 
+    // Generate simplified data list of hourly data
+    fun generateSimplifiedHourlyData(weatherData: WeatherHourly?): List<SimplifiedWeatherData>? {
+
+        val timeStamps: List<String?>? = weatherData?.time
+        val temperatures: List<Double?>? = weatherData?.temperature_2m
+        val weatherCodes: List<Int?>? = weatherData?.weather_code
+
+        // Try catch block to avoid out of bounds exception
+        // in case the weather data holds lists that differ in length
+        try {
+
+            // If there is no data from the api then return null
+            if (weatherData != null) {
+                val dates: List<String>? = parseDates(timeStamps)
+                val hours: List<String>? = parseHours(timeStamps)
+
+                val resultList = mutableListOf<SimplifiedWeatherData>()
+
+                // Iterate over all time stamps if it isn't null
+                if (timeStamps != null) {
+                    for (i in timeStamps.indices) {
+
+                        // Fetch data related to the weather codes for the current time stamp
+                        var condition = "No Data" // Initial description for null
+                        var backgroundImage = 0 // Initial image for null
+
+                        // iterate over the apps own weather code model
+                        for (code in initialWeatherCodes) {
+
+                            // Check if the code matches and change the image and description accordingly
+                            if (weatherCodes?.get(i) == code.code) {
+                                condition = code.conditions
+                                backgroundImage = code.backgroundImage
+                            }
+                        }
+
+                        // Try to add each new data block to the new list that contains SimplifiedWeatherData
+                        resultList.add(
+                            SimplifiedWeatherData(
+                                date = dates?.get(i) ?: "No Data",
+                                hour = hours?.get(i) ?: "No Data",
+                                temperature = temperatures?.get(i) ?: 0.0,
+                                weatherConditions = condition,
+                                backgroundImage = backgroundImage
+                            )
+                        )
+                    }
+                }
+
+                // finally return the simplified weather data list
+                return resultList
+            }
+
+            return null
+
+        } catch(e: IndexOutOfBoundsException) {
+            Log.d("SIMPLIFIED LIST GENERATOR", "Weather Data lists differ in length!!!")
+            return null
+        }
+    }
+
     // Separate the date from the timestamps and change it into the format used by WeekDayModel
-    private fun parseDates(timeStamps: List<String>?): List<String> {
-        val formatter: DateFormat = SimpleDateFormat.getDateInstance()
-        val parser = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+    private fun parseDates(timeStamps: List<String?>?): List<String>? {
+        if (timeStamps != null) {
+            val dateList = mutableListOf<String>()
 
-        val dateList = mutableListOf<String>()
+            timeStamps.forEach {
+                if (it != null) {
+                    val date: Date = parser.parse(it.substringBefore("T")) ?: Date()
+                    val parsed = formatter.format(date)
+                    dateList.add(parsed)
+                } else {
+                    dateList.add("No Data")
+                }
 
-        timeStamps?.forEach() {
-            val date: Date = parser.parse(it.substringBefore("T")) ?: Date()
-            val parsed = formatter.format(date)
-            dateList.add(parsed)
+            }
+
+            return dateList
         }
 
-        return dateList
+        return null
     }
 
     // Separate the hour/minutes from the timestamps
-    private fun parseHours(timeStamps: List<String>?): List<String> {
-        val hoursList = mutableListOf<String>()
+    private fun parseHours(timeStamps: List<String?>?): List<String>? {
+        if (timeStamps != null) {
+            val hoursList = mutableListOf<String>()
 
-        timeStamps?.forEach() {
-            val parsed = it.substringAfter("T")
-            hoursList.add(parsed)
+            timeStamps.forEach {
+                val parsed = it?.substringAfter("T")
+                hoursList.add(parsed ?: "No Data")
+            }
+
+            return hoursList
         }
 
-        return hoursList
+        return null
     }
 }

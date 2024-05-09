@@ -1,17 +1,26 @@
 package fi.tuni.weather_forecasting_app.models
 
+import com.google.gson.annotations.SerializedName
 import fi.tuni.weather_forecasting_app.R
 
-data class WeatherData(
-    val hourly: WeatherHourly
+data class WeatherDataResponse(
+    @SerializedName("hourly") val hourly: WeatherHourly,
+    @SerializedName("current") val current: WeatherCurrent
 )
 
 data class WeatherHourly(
-    val time: List<String>,
-    val temperature_2m: List<Double>,
-    val weather_code: List<Int>
+    val time: List<String?>?,
+    val temperature_2m: List<Double?>?,
+    val weather_code: List<Int?>?
 )
 
+data class WeatherCurrent(
+    val time: String?,
+    val temperature_2m: Double?,
+    val weather_code: Int?
+)
+
+// Class that is represented to the user and thus needs to hold some values and not null
 data class SimplifiedWeatherData(
     val date: String,
     val temperature: Double,

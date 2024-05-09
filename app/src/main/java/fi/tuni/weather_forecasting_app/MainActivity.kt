@@ -13,6 +13,7 @@ import fi.tuni.weather_forecasting_app.ui.theme.Weather_forecasting_appTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             Weather_forecasting_appTheme {
                 // A surface container using the 'background' color from the theme

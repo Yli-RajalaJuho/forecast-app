@@ -1,6 +1,5 @@
 package fi.tuni.weather_forecasting_app.ui.components.ui_parts
 
-import android.graphics.drawable.shapes.OvalShape
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
@@ -33,11 +31,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import fi.tuni.weather_forecasting_app.ui.theme.IndigoGradientBackground
 import fi.tuni.weather_forecasting_app.viewmodels.WeatherDataViewModel
 
 @Composable
-fun CurrentDayForecast(date: String, opacity: Float, forecastViewModel: WeatherDataViewModel) {
+fun ForecastOfTheDay(date: String, opacity: Float, forecastViewModel: WeatherDataViewModel) {
 
     // model for forecast
     val isRefreshing = remember { forecastViewModel.isRefreshing }
@@ -52,9 +49,17 @@ fun CurrentDayForecast(date: String, opacity: Float, forecastViewModel: WeatherD
     }
 
     if (isRefreshing.value) {
+
         // show loading
         Text(text = "Loading...", modifier = Modifier.fillMaxWidth().alpha(opacity), textAlign = TextAlign.Center)
+
+    } else if (hourlyData.isEmpty() && !isRefreshing.value) {
+
+        // no data available
+        Text(text = "No Weather Data Available", modifier = Modifier.fillMaxWidth().alpha(opacity), textAlign = TextAlign.Center)
+
     } else {
+
         Box(modifier = Modifier.alpha(opacity)) {
             LazyColumn {
                 items(hourlyData.size + 1) {

@@ -17,7 +17,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 
-class WeatherDataViewModel(application: Application): AndroidViewModel(application) {
+class WeatherDataViewModel(
+    application: Application,
+    //private val settingsViewModel: SettingsViewModel
+): AndroidViewModel(application) {
 
     private val locationRepository = LocationRepository(application)
 
@@ -25,9 +28,18 @@ class WeatherDataViewModel(application: Application): AndroidViewModel(applicati
     private val _forecastData: MutableState<List<SimplifiedWeatherData>?> = mutableStateOf(null)
     val forecastData: List<SimplifiedWeatherData> get() = _forecastData.value ?: emptyList()
 
+    // Current weather data
+    private val _currentWeatherData: MutableState<SimplifiedWeatherData?> = mutableStateOf(null)
+    val currentWeatherData: SimplifiedWeatherData? get() = _currentWeatherData.value
+
     // Refreshing state
     private val _isRefreshing = mutableStateOf(false)
     val isRefreshing get() = _isRefreshing
+
+    // What data to fetch hourly (changed from the settings)
+    private val _replaceNullFetchable = "temperature_2m,weather_code"
+    private val _dataToFetch: MutableState<String?> = mutableStateOf(_replaceNullFetchable)
+    val dataToFetch get() = _dataToFetch
 
     // Returns a list generated from the forecastData based on given date
     fun getHourlyData(date: String): List<SimplifiedWeatherData> {
@@ -56,10 +68,19 @@ class WeatherDataViewModel(application: Application): AndroidViewModel(applicati
             val currentLocation: Location = fetchLocation()
 
             try {
-                // fetch weather data with the location
-                val weatherData = ForecastRepository.service.getWeatherForecast(
-                    currentLocation.latitude, currentLocation.longitude, "temperature_2m,weather_code", 14, 14).hourly
-                _forecastData.value = ForecastRepository.generateSimplifiedData(weatherData)
+                // fetch data with the location
+                val response = ForecastRepository.service.getWeatherForecast(
+                    currentLocation.latitude,
+                    currentLocation.longitude,
+                    _dataToFetch.value ?: _replaceNullFetchable,
+                    _dataToFetch.value ?: _replaceNullFetchable,
+                    14,
+                    14
+                )
+
+                _forecastData.value = ForecastRepository.generateSimplifiedHourlyData(response.hourly)
+                _currentWeatherData.value = ForecastRepository.generateSimplifiedCurrentData(response.current)
+
             } catch (e: HttpException) {
                 Log.d("HTTP ERROR", e.response()?.errorBody()?.string() ?: "")
             } finally {
