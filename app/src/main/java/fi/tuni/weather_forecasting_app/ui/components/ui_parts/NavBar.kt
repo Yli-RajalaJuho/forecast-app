@@ -7,7 +7,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,12 +39,11 @@ fun NavBar(header: String = "", description: String = "") {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
+            Icon(
                 modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Start,
-                text = "Menu",
-                color = Color.Transparent.compositeOver(
-                    MaterialTheme.colorScheme.onPrimary)
+                imageVector = Icons.Filled.Menu,
+                contentDescription = "Menu Icon",
+                tint = Color.Transparent.compositeOver(MaterialTheme.colorScheme.onPrimary)
             )
             Column(
                 modifier = Modifier.weight(2f),
@@ -62,12 +65,11 @@ fun NavBar(header: String = "", description: String = "") {
                         MaterialTheme.colorScheme.onPrimary)
                 )
             }
-            Text(
+            Icon(
                 modifier = Modifier.weight(1f),
-                textAlign = TextAlign.End,
-                text = "Settings",
-                color = Color.Transparent.compositeOver(
-                    MaterialTheme.colorScheme.onPrimary)
+                imageVector = Icons.Filled.Settings,
+                contentDescription = "Settings Icon",
+                tint = Color.Transparent.compositeOver(MaterialTheme.colorScheme.onPrimary)
             )
         }
     }

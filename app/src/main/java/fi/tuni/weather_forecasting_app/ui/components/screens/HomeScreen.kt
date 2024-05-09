@@ -38,9 +38,7 @@ fun HomeScreen(
             WeekSelector(navController)
 
             // Current weather
-            Box(modifier = Modifier.fillMaxHeight()) {
-                CurrentWeatherDisplay(weekViewModel, weatherDataViewModel)
-            }
+            CurrentWeatherDisplay(weatherDataViewModel)
         }
     }
 }

@@ -27,7 +27,7 @@ fun WeeksWeatherScreen(
 
     IndigoGradientBackground {
         Column {
-            NavBar("Forecasts", "$week week")
+            NavBar("Forecast")
             ForecastOfTheWeek(displayWeek, weekViewModel, weatherDataViewModel)
         }
     }
