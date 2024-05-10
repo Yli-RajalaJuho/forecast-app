@@ -36,10 +36,15 @@ class WeatherDataViewModel(
     private val _isRefreshing = mutableStateOf(false)
     val isRefreshing get() = _isRefreshing
 
-    // What data to fetch hourly (changed from the settings)
-    private val _replaceNullFetchable = "temperature_2m,weather_code"
-    private val _dataToFetch: MutableState<String?> = mutableStateOf(_replaceNullFetchable)
-    val dataToFetch get() = _dataToFetch
+    // What current data to fetch (changed from the settings)
+    private val _initialCurrentFetch = "temperature_2m,apparent_temperature,weather_code,wind_speed_10m"
+    private val _currentDataToFetch: MutableState<String?> = mutableStateOf(_initialCurrentFetch)
+    val currentDataToFetch get() = _currentDataToFetch
+
+    // What hourly data to fetch (changed from the settings)
+    private val _initialHourlyFetch = "temperature_2m,weather_code"
+    private val _hourlyDataToFetch: MutableState<String?> = mutableStateOf(_initialHourlyFetch)
+    val hourlyDataToFetch get() = _hourlyDataToFetch
 
     // Returns a list generated from the forecastData based on given date
     fun getHourlyData(date: String): List<SimplifiedWeatherData> {
@@ -72,10 +77,11 @@ class WeatherDataViewModel(
                 val response = ForecastRepository.service.getWeatherForecast(
                     currentLocation.latitude,
                     currentLocation.longitude,
-                    _dataToFetch.value ?: _replaceNullFetchable,
-                    _dataToFetch.value ?: _replaceNullFetchable,
+                    _currentDataToFetch.value ?: _initialCurrentFetch,
+                    _hourlyDataToFetch.value ?: _initialHourlyFetch,
                     14,
-                    14
+                    14,
+                    "ms"
                 )
 
                 _forecastData.value = ForecastRepository.generateSimplifiedHourlyData(response.hourly)

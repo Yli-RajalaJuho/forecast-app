@@ -2,6 +2,7 @@ package fi.tuni.weather_forecasting_app.repositories
 
 import android.util.Log
 import fi.tuni.weather_forecasting_app.models.SimplifiedWeatherData
+import fi.tuni.weather_forecasting_app.models.WeatherCode
 import fi.tuni.weather_forecasting_app.models.WeatherCodeList
 import fi.tuni.weather_forecasting_app.models.WeatherCurrent
 import fi.tuni.weather_forecasting_app.models.WeatherDataResponse
@@ -24,7 +25,8 @@ interface WeatherApiService {
         @Query("current") current: String,
         @Query("hourly") hourly: String,
         @Query("past_days") past: Int,
-        @Query("forecast_days") forecast: Int
+        @Query("forecast_days") forecast: Int,
+        @Query("wind_speed_unit") windSpeedUnit: String,
     ): WeatherDataResponse
 }
 
@@ -43,8 +45,15 @@ object ForecastRepository {
     val service: WeatherApiService = retrofit.create(WeatherApiService::class.java)
 
     suspend fun getWeatherForecast(
-        latitude: Double, longitude: Double, current: String, hourly: String, past: Int, forecast: Int): WeatherDataResponse {
-        return service.getWeatherForecast(latitude, longitude, current, hourly, past, forecast)
+        latitude: Double,
+        longitude: Double,
+        current: String,
+        hourly: String, past:
+        Int, forecast: Int,
+        windSpeedUnit: String
+    ): WeatherDataResponse {
+
+        return service.getWeatherForecast(latitude, longitude, current, hourly, past, forecast, windSpeedUnit)
     }
 
     // Generate simplified data object of current data
@@ -52,7 +61,9 @@ object ForecastRepository {
 
         val timeStamp: String? = weatherData?.time
         val temperature: Double? = weatherData?.temperature_2m
-        val weatherCode: Int? = weatherData?.weather_code
+        val apparentTemperature: Double? = weatherData?.apparent_temperature
+        val responseWeatherCode: Int? = weatherData?.weather_code
+        val windSpeed: Double? = weatherData?.wind_speed_10m
 
         // If there is no data from the api then return null
         if (weatherData != null) {
@@ -71,25 +82,24 @@ object ForecastRepository {
             }
 
             // Fetch data related to the weather codes for the current time stamp
-            var condition = "No Data" // Initial description for null
-            var backgroundImage = 0 // Initial image for null
+            var weatherCode: WeatherCode? = null
 
             // iterate over the apps own weather code model
-            for (code in initialWeatherCodes) {
+            for (weatherCodeData in initialWeatherCodes) {
 
                 // Check if the code matches and change the image and description accordingly
-                if (weatherCode == code.code) {
-                    condition = code.conditions
-                    backgroundImage = code.backgroundImage
+                if (responseWeatherCode == weatherCodeData.code) {
+                    weatherCode = weatherCodeData
                 }
             }
 
             return SimplifiedWeatherData(
                 date = date ?: "No Data",
                 hour = hour ?: "No Data",
-                temperature = temperature ?: 0.0,
-                weatherConditions = condition,
-                backgroundImage = backgroundImage
+                temperature = temperature ?: 0.0, // replace null
+                apparentTemperature = apparentTemperature ?: 0.0, // replace null
+                weatherCode = weatherCode ?: initialWeatherCodes[0], // no data weather code
+                windSpeed = windSpeed ?: 0.0 // replace null
             )
         }
 
@@ -119,16 +129,14 @@ object ForecastRepository {
                     for (i in timeStamps.indices) {
 
                         // Fetch data related to the weather codes for the current time stamp
-                        var condition = "No Data" // Initial description for null
-                        var backgroundImage = 0 // Initial image for null
+                        var weatherCode: WeatherCode? = null
 
                         // iterate over the apps own weather code model
-                        for (code in initialWeatherCodes) {
+                        for (weatherCodeData in initialWeatherCodes) {
 
-                            // Check if the code matches and change the image and description accordingly
-                            if (weatherCodes?.get(i) == code.code) {
-                                condition = code.conditions
-                                backgroundImage = code.backgroundImage
+                            // Check if the code matches
+                            if (weatherCodes?.get(i) == weatherCodeData.code) {
+                                weatherCode = weatherCodeData
                             }
                         }
 
@@ -137,9 +145,10 @@ object ForecastRepository {
                             SimplifiedWeatherData(
                                 date = dates?.get(i) ?: "No Data",
                                 hour = hours?.get(i) ?: "No Data",
-                                temperature = temperatures?.get(i) ?: 0.0,
-                                weatherConditions = condition,
-                                backgroundImage = backgroundImage
+                                temperature = temperatures?.get(i) ?: 0.0, // replace null
+                                apparentTemperature = 0.0, // replace null
+                                weatherCode = weatherCode ?: initialWeatherCodes[0], // no data weather code
+                                windSpeed = 0.0 // replace null
                             )
                         )
                     }

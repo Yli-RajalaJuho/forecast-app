@@ -52,13 +52,13 @@ fun ForecastOfTheDay(date: String, opacity: Float, forecastViewModel: WeatherDat
 
     val alphaLoadingContent = animateFloatAsState(
         targetValue = if (isRefreshing.value) 0f else 1f,
-        animationSpec = tween(durationMillis = 1000),
+        animationSpec = tween(durationMillis = 1500),
         label = ""
     )
 
     val alphaLoadingIcon = animateFloatAsState(
         targetValue = if (isRefreshing.value) 1f else 0f,
-        animationSpec = tween(durationMillis = 2000),
+        animationSpec = tween(durationMillis = 1000),
         label = ""
     )
 
@@ -106,7 +106,6 @@ fun ForecastOfTheDay(date: String, opacity: Float, forecastViewModel: WeatherDat
                                 ) {
                                     Text(
                                         modifier = Modifier.weight(1f),
-                                        //modifier = Modifier.fillMaxWidth(),
                                         textAlign = TextAlign.Start,
                                         text = hourlyData[it].hour,
                                     )
@@ -119,7 +118,7 @@ fun ForecastOfTheDay(date: String, opacity: Float, forecastViewModel: WeatherDat
                                             modifier = Modifier.fillMaxWidth(),
                                             textAlign = TextAlign.Center,
                                             fontWeight = FontWeight.Bold,
-                                            text = hourlyData[it].weatherConditions
+                                            text = hourlyData[it].weatherCode.conditions
                                         )
                                         Text(
                                             modifier = Modifier.fillMaxWidth(),
@@ -130,7 +129,7 @@ fun ForecastOfTheDay(date: String, opacity: Float, forecastViewModel: WeatherDat
                                     }
 
                                     Image(
-                                        painter = painterResource(id = hourlyData[it].backgroundImage),
+                                        painter = painterResource(id = hourlyData[it].weatherCode.backgroundImage),
                                         contentDescription = "background image",
                                         modifier = Modifier
                                             .size(LocalConfiguration.current.screenWidthDp.dp / 5)

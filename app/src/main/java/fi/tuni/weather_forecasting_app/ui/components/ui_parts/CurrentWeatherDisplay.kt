@@ -1,17 +1,24 @@
 package fi.tuni.weather_forecasting_app.ui.components.ui_parts
 
+import android.content.res.Resources
+import android.graphics.drawable.shapes.OvalShape
 import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
@@ -26,11 +33,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,13 +57,13 @@ fun CurrentWeatherDisplay(weatherDataViewModel: WeatherDataViewModel) {
 
     val alphaData = animateFloatAsState(
         targetValue = if (currentData != null) 1f else 0f,
-        animationSpec = tween(durationMillis = 2000),
+        animationSpec = tween(durationMillis = 1500),
         label = ""
     )
 
     val alphaLoadingIcon = animateFloatAsState(
         targetValue = if (isRefreshing.value) 1f else 0f,
-        animationSpec = tween(durationMillis = 2000),
+        animationSpec = tween(durationMillis = 1000),
         label = ""
     )
 
@@ -68,7 +77,9 @@ fun CurrentWeatherDisplay(weatherDataViewModel: WeatherDataViewModel) {
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(40.dp).alpha(alphaLoadingIcon.value),
+                    modifier = Modifier
+                        .size(40.dp)
+                        .alpha(alphaLoadingIcon.value),
                     color = Color.Transparent.compositeOver(MaterialTheme.colorScheme.secondary),
                 )
             }
@@ -83,11 +94,10 @@ fun CurrentWeatherDisplay(weatherDataViewModel: WeatherDataViewModel) {
         Box(modifier = Modifier.fillMaxHeight()) {
             // Background
             Image(
-                painter = painterResource(id = currentData.backgroundImage),
+                painter = painterResource(id = currentData.weatherCode.backgroundImage),
                 contentDescription = "background image",
                 modifier = Modifier
                     .size(LocalConfiguration.current.screenHeightDp.dp)
-                    .alpha(0.9F)
                     .graphicsLayer(alpha = alphaData.value)
                     .animateContentSize(),
                 contentScale = ContentScale.Crop,
@@ -95,30 +105,108 @@ fun CurrentWeatherDisplay(weatherDataViewModel: WeatherDataViewModel) {
             )
 
             // Data
-            Column(modifier = Modifier
+            LazyColumn(modifier = Modifier
                 .graphicsLayer(alpha = alphaData.value)
                 .animateContentSize()
+                .padding(20.dp)
             ) {
 
                 // Temperature
-                Text(
-                    text = "${currentData.temperature} °C",
-                    modifier = Modifier
+                item {
+                    Column(modifier = Modifier
                         .fillMaxWidth()
-                        .padding(20.dp),
-                    textAlign = TextAlign.Start,
-                    fontSize = 44.sp
-                )
+                        .background(
+                            shape = RoundedCornerShape(20.dp),
+                            color = Color.Transparent
+                                .compositeOver(
+                                    MaterialTheme.colorScheme.secondaryContainer
+                                )
+                                .copy(alpha = 0.3f)
+                        )
+                    ) {
+                        // Temperature
+                        Text(
+                            text = "${currentData.temperature} °C",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 20.dp, start = 20.dp),
+                            textAlign = TextAlign.Start,
+                            fontSize = 44.sp,
+                            color = Color.Transparent.compositeOver(
+                                MaterialTheme.colorScheme.onSecondaryContainer)
+                        )
 
-                // Weather conditions
-                Text(
-                    text = currentData.weatherConditions,
-                    modifier = Modifier
+                        // Feels like
+                        Text(
+                            text = "Feels like ${currentData.apparentTemperature} °C",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 20.dp, bottom = 20.dp),
+                            textAlign = TextAlign.Start,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            color = Color.Transparent.compositeOver(
+                                MaterialTheme.colorScheme.onSecondaryContainer)
+                        )
+                    }
+                }
+
+                item {
+                    Column(modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp),
-                    textAlign = TextAlign.Start,
-                    fontSize = 24.sp
-                )
+                        .padding(top = 20.dp)
+                        .background(
+                            shape = RoundedCornerShape(20.dp),
+                            color = Color.Transparent
+                                .compositeOver(
+                                    MaterialTheme.colorScheme.secondaryContainer
+                                )
+                                .copy(alpha = 0.3f)
+                        )
+                    ) {
+                        Row {
+                            Box(
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Column {
+                                    // Weather conditions
+                                    Text(
+                                        text = currentData.weatherCode.conditions,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(start = 20.dp, top = 20.dp),
+                                        textAlign = TextAlign.Start,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 24.sp,
+                                        color = Color.Transparent.compositeOver(
+                                            MaterialTheme.colorScheme.onSecondaryContainer)
+                                    )
+
+                                    // Wind speed in m/s
+                                    Text(
+                                        text = "${currentData.windSpeed} m/s",
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(start = 20.dp, top = 20.dp, bottom = 20.dp),
+                                        textAlign = TextAlign.Start,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp,
+                                        color = Color.Transparent.compositeOver(
+                                            MaterialTheme.colorScheme.onSecondaryContainer)
+                                    )
+                                }
+                            }
+
+                            Icon(
+                                painter = painterResource(id = currentData.weatherCode.weatherIcon),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .align(alignment = Alignment.CenterVertically),
+                            )
+                        }
+                    }
+                }
             }
 
             // Loading indicator
@@ -130,17 +218,19 @@ fun CurrentWeatherDisplay(weatherDataViewModel: WeatherDataViewModel) {
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator(
-                        modifier = Modifier.size(40.dp).alpha(alphaLoadingIcon.value),
+                        modifier = Modifier
+                            .size(40.dp)
+                            .alpha(alphaLoadingIcon.value),
                         color = Color.Transparent.compositeOver(MaterialTheme.colorScheme.secondary),
                     )
                 }
             }
 
-            // refresh button
+            // Refresh button
             Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 20.dp)
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 20.dp)
             ) {
                 Button(
                     onClick = {

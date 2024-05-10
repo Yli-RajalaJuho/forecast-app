@@ -37,6 +37,10 @@ private val DarkColorScheme = darkColorScheme(
     primary = Grey10,
     onPrimary = Grey99,
 
+    // home screen lists
+    secondaryContainer = Grey10,
+    onSecondaryContainer = Grey99,
+
     // button
     secondary = Grey99,
     onSecondary = Grey10,
@@ -62,6 +66,10 @@ private val LightColorScheme = lightColorScheme(
     // My color scheme
     primary = Grey99,
     onPrimary = Grey10,
+
+    // home screen lists
+    secondaryContainer = Grey10,
+    onSecondaryContainer = Grey99,
 
     // button
     secondary = Grey10,
