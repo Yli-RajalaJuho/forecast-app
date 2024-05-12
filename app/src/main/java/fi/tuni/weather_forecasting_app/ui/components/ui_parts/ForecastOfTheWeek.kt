@@ -12,7 +12,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import fi.tuni.weather_forecasting_app.models.Day
 import fi.tuni.weather_forecasting_app.viewmodels.WeatherDataViewModel
 import fi.tuni.weather_forecasting_app.viewmodels.WeekDayViewModel
@@ -68,17 +68,24 @@ fun ForecastOfTheWeek(
         scrollDirection.value = 0
     }
 
+
     HorizontalPager(state = pagerState) { day ->
         Column {
+
             // header
             Box(
                 modifier = Modifier
-                    .background(color = Color.Transparent
-                        .compositeOver(MaterialTheme.colorScheme.primaryContainer)),
+                    .zIndex(1f)
+                    .background(
+                        color = Color.Transparent
+                            .compositeOver(MaterialTheme.colorScheme.primaryContainer)
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 15.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 15.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -167,7 +174,10 @@ fun ForecastOfTheWeek(
                 }
             }
 
-            ForecastOfTheDay(week[day].date, getOpacity(), weatherDataViewModel)
+            // ForecastOfTheWeek
+            Box(modifier = Modifier.zIndex(0f),) {
+                ForecastOfTheDay(week[day].date, getOpacity(), weatherDataViewModel)
+            }
         }
     }
 }

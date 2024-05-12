@@ -1,27 +1,29 @@
 package fi.tuni.weather_forecasting_app.ui.components.ui_parts
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -30,8 +32,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
@@ -40,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import fi.tuni.weather_forecasting_app.viewmodels.WeatherDataViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ForecastOfTheDay(date: String, opacity: Float, forecastViewModel: WeatherDataViewModel) {
 
@@ -50,15 +54,9 @@ fun ForecastOfTheDay(date: String, opacity: Float, forecastViewModel: WeatherDat
         forecastViewModel.getHourlyData(date)
     }
 
-    val alphaLoadingContent = animateFloatAsState(
-        targetValue = if (isRefreshing.value) 0f else 1f,
+    val alphaData = animateFloatAsState(
+        targetValue = if (hourlyData.isNotEmpty()) 1f else 0f,
         animationSpec = tween(durationMillis = 1500),
-        label = ""
-    )
-
-    val alphaLoadingIcon = animateFloatAsState(
-        targetValue = if (isRefreshing.value) 1f else 0f,
-        animationSpec = tween(durationMillis = 1000),
         label = ""
     )
 
@@ -67,127 +65,132 @@ fun ForecastOfTheDay(date: String, opacity: Float, forecastViewModel: WeatherDat
         hourlyData = forecastViewModel.getHourlyData(date)
     }
 
-    if (hourlyData.isEmpty() && !isRefreshing.value) {
+    val pullToRefreshState = rememberPullToRefreshState(positionalThreshold = PullToRefreshDefaults.PositionalThreshold * 0.6f)
 
-        // no data available
-        Text(text = "No Weather Data Available", modifier = Modifier
-            .fillMaxWidth()
-            .alpha(opacity), textAlign = TextAlign.Center)
+    val lazyListState = rememberLazyListState()
 
-    } else {
+    if (pullToRefreshState.isRefreshing) {
+        LaunchedEffect(true) {
+            forecastViewModel.refreshWeatherData()
+        }
+    }
 
+    LaunchedEffect(isRefreshing.value) {
         if (isRefreshing.value) {
-
-            // Show loading
-            Box(
-                modifier = Modifier.fillMaxSize().alpha(alphaLoadingIcon.value),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(40.dp),
-                    color = Color.Transparent.compositeOver(MaterialTheme.colorScheme.secondary)
-                )
-            }
-
+            pullToRefreshState.startRefresh()
         } else {
+            pullToRefreshState.endRefresh()
+        }
+    }
 
-            Box(modifier = Modifier.alpha(opacity)) {
-                LazyColumn(modifier = Modifier.alpha(alphaLoadingContent.value)) {
-                    items(hourlyData.size + 1) {
-                        if (it < hourlyData.size) {
-                            Box(
-                                modifier = Modifier.padding(vertical = 30.dp, horizontal = 15.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        modifier = Modifier.weight(1f),
-                                        textAlign = TextAlign.Start,
-                                        text = hourlyData[it].hour,
-                                    )
-                                    Column(
-                                        modifier = Modifier.weight(1f),
-                                        verticalArrangement = Arrangement.Center,
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-                                        Text(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            textAlign = TextAlign.Center,
-                                            fontWeight = FontWeight.Bold,
-                                            text = hourlyData[it].weatherCode.conditions
-                                        )
-                                        Text(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            textAlign = TextAlign.Center,
-                                            fontWeight = FontWeight.Bold,
-                                            text = "${hourlyData[it].temperature} °C"
-                                        )
-                                    }
+    if (hourlyData.isEmpty()) {
+        if (!isRefreshing.value) {
+            // show no data
+            Text(
+                text = "No Weather Data Available",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+        }
+    } else {
+        Box(modifier = Modifier.alpha(opacity)) {
+            LazyColumn(
+                state = lazyListState,
+                modifier = Modifier
+                    .nestedScroll(pullToRefreshState.nestedScrollConnection)
+                    .alpha(alphaData.value),
+            ) {
+                items(hourlyData.size) {
 
-                                    Image(
-                                        painter = painterResource(id = hourlyData[it].weatherCode.backgroundImage),
-                                        contentDescription = "background image",
-                                        modifier = Modifier
-                                            .size(LocalConfiguration.current.screenWidthDp.dp / 5)
-                                            .clip(RectangleShape)
-                                            .border(
-                                                width = 2.dp,
-                                                color = Color.Transparent.compositeOver(
-                                                    MaterialTheme.colorScheme.onSurface
-                                                ),
-                                                shape = RectangleShape
-                                            ),
-                                        contentScale = ContentScale.Crop,
-                                        alignment = Alignment.TopCenter,
-                                    )
-                                }
-                            }
-
-                            Divider(
-                                modifier = Modifier.padding(horizontal = 20.dp),
-                                color = Color.Transparent.compositeOver(
-                                    MaterialTheme.colorScheme.onSurface)
-                            )
-                        } else {
-                            Box(modifier = Modifier.padding(50.dp)) {}
-                        }
-                    }
-                }
-
-                // refresh button
-                if (!isRefreshing.value) {
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.BottomCenter)
-                            .padding(bottom = 20.dp)
+                            .height(100.dp)
+                            .padding(top = 15.dp, start = 20.dp, end = 20.dp, bottom = 15.dp)
+                            .clip(shape = RoundedCornerShape(20.dp)),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Button(
-                            onClick = {
-                                forecastViewModel.refreshWeatherData()
-                            },
-                            modifier = Modifier.align(Alignment.Center),
-                            colors = ButtonDefaults.buttonColors(Color.Transparent.compositeOver(
-                                MaterialTheme.colorScheme.secondary))
+
+                        // Background
+                        Image(
+                            painter = painterResource(id = hourlyData[it].weatherCode.backgroundImage),
+                            contentDescription = "background image",
+                            modifier = Modifier
+                                .size(LocalConfiguration.current.screenWidthDp.dp)
+                                .graphicsLayer(alpha = alphaData.value)
+                                .animateContentSize()
+                                .alpha(0.5f)
+                                .clip(shape = RoundedCornerShape(20.dp)),
+                            contentScale = ContentScale.Crop,
+                            alignment = Alignment.Center,
+                        )
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    color = Color.Transparent
+                                        .compositeOver(
+                                            MaterialTheme.colorScheme.secondaryContainer
+                                        )
+                                        .copy(alpha = 0.5f)
+                                ),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
+
                             Text(
-                                text = "Refresh",
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(start = 10.dp),
+                                textAlign = TextAlign.Start,
+                                text = hourlyData[it].hour,
                                 color = Color.Transparent.compositeOver(
-                                    MaterialTheme.colorScheme.onSecondary),
+                                    MaterialTheme.colorScheme.onSecondaryContainer)
                             )
+                            Column(
+                                modifier = Modifier.weight(2f),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = FontWeight.Bold,
+                                    text = hourlyData[it].weatherCode.conditions,
+                                    color = Color.Transparent.compositeOver(
+                                        MaterialTheme.colorScheme.onSecondaryContainer)
+                                )
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = FontWeight.Bold,
+                                    text = "${hourlyData[it].temperature} °C",
+                                    color = Color.Transparent.compositeOver(
+                                        MaterialTheme.colorScheme.onSecondaryContainer)
+                                )
+                            }
+
                             Icon(
-                                imageVector = Icons.Filled.Refresh,
-                                contentDescription = "Refresh",
-                                tint = Color.Transparent.compositeOver(MaterialTheme.colorScheme.onSecondary),
+                                painter = painterResource(id = hourlyData[it].weatherCode.weatherIcon),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .align(alignment = Alignment.CenterVertically)
+                                    .padding(20.dp),
+                                tint = Color.Transparent.compositeOver(
+                                    MaterialTheme.colorScheme.onSecondaryContainer)
                             )
                         }
                     }
                 }
             }
+
+            PullToRefreshContainer(
+                state = pullToRefreshState,
+                modifier = Modifier.align(Alignment.TopCenter),
+                containerColor = Color.Transparent.compositeOver(MaterialTheme.colorScheme.primary),
+                contentColor = Color.Transparent.compositeOver(MaterialTheme.colorScheme.onPrimary),
+            )
         }
     }
 }

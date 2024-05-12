@@ -37,7 +37,7 @@ class WeatherDataViewModel(
     val isRefreshing get() = _isRefreshing
 
     // What current data to fetch (changed from the settings)
-    private val _initialCurrentFetch = "temperature_2m,apparent_temperature,weather_code,wind_speed_10m"
+    private val _initialCurrentFetch = "temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m"
     private val _currentDataToFetch: MutableState<String?> = mutableStateOf(_initialCurrentFetch)
     val currentDataToFetch get() = _currentDataToFetch
 
@@ -57,6 +57,13 @@ class WeatherDataViewModel(
         }
 
         return dataForDay
+    }
+
+    // Returns the wind direction
+    fun getWindDirection(degrees: Int): String {
+        val directions = arrayOf("N", "NE", "E", "SE", "S", "SW", "W", "NW", "N")
+        val index = ((degrees + 22.5) % 360 / 45).toInt()
+        return directions[index]
     }
 
     fun refreshWeatherData() {

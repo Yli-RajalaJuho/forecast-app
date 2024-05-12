@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import fi.tuni.weather_forecasting_app.R
 import fi.tuni.weather_forecasting_app.viewmodels.WeatherDataViewModel
 import kotlinx.coroutines.delay
+import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,12 +63,7 @@ fun CurrentWeatherDisplay(weatherDataViewModel: WeatherDataViewModel) {
         label = ""
     )
 
-    val pullToRefreshState = rememberPullToRefreshState()
-    val alphaLoadingIcon = animateFloatAsState(
-        targetValue = if (isRefreshing.value) 1f else 0f,
-        animationSpec = tween(durationMillis = 1000),
-        label = ""
-    )
+    val pullToRefreshState = rememberPullToRefreshState(positionalThreshold = PullToRefreshDefaults.PositionalThreshold * 0.6f)
 
     // Alpha value of the info boxes
     val infoBoxAlpha = 0.5f
@@ -169,12 +166,11 @@ fun CurrentWeatherDisplay(weatherDataViewModel: WeatherDataViewModel) {
                                     MaterialTheme.colorScheme.onSecondaryContainer)
                             )
                         }
-
                         PullToRefreshContainer(
                             state = pullToRefreshState,
-                            modifier = Modifier.align(Alignment.TopCenter).offset(y = (-50).dp),
-                            containerColor = Color.Transparent.compositeOver(MaterialTheme.colorScheme.secondary),
-                            contentColor = Color.Transparent.compositeOver(MaterialTheme.colorScheme.onSecondary)
+                            modifier = Modifier.align(Alignment.TopCenter).offset(y = (-20).dp),
+                            containerColor = Color.Transparent.compositeOver(MaterialTheme.colorScheme.primary),
+                            contentColor = Color.Transparent.compositeOver(MaterialTheme.colorScheme.onPrimary),
                         )
                     }
                 }
@@ -191,6 +187,19 @@ fun CurrentWeatherDisplay(weatherDataViewModel: WeatherDataViewModel) {
                                 .copy(alpha = infoBoxAlpha)
                         )
                     ) {
+                        // Weather code icon
+                        Icon(
+                            painter = painterResource(id = currentData.weatherCode.weatherIcon),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .weight(1f)
+                                .align(alignment = Alignment.CenterVertically)
+                                .padding(20.dp)
+                                .size(30.dp),
+                            tint = Color.Transparent.compositeOver(
+                                MaterialTheme.colorScheme.onSecondaryContainer)
+                        )
+
                         // Weather conditions
                         Text(
                             text = currentData.weatherCode.conditions,
@@ -203,16 +212,6 @@ fun CurrentWeatherDisplay(weatherDataViewModel: WeatherDataViewModel) {
                             fontSize = 22.sp,
                             color = Color.Transparent.compositeOver(
                                 MaterialTheme.colorScheme.onSecondaryContainer)
-                        )
-
-                        // Weather code icon
-                        Icon(
-                            painter = painterResource(id = currentData.weatherCode.weatherIcon),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .weight(1f)
-                                .align(alignment = Alignment.CenterVertically)
-                                .padding(20.dp),
                         )
                     }
                 }
@@ -229,6 +228,18 @@ fun CurrentWeatherDisplay(weatherDataViewModel: WeatherDataViewModel) {
                                 .copy(alpha = infoBoxAlpha)
                         )) {
                         Row {
+                            // Wind
+                            Icon(
+                                painter = painterResource(id = R.drawable.outline_air),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .align(alignment = Alignment.CenterVertically)
+                                    .size(30.dp),
+                                tint = Color.Transparent.compositeOver(
+                                    MaterialTheme.colorScheme.onSecondaryContainer)
+                            )
+
                             Column(
                                 modifier = Modifier
                                     .weight(2f)
@@ -246,22 +257,13 @@ fun CurrentWeatherDisplay(weatherDataViewModel: WeatherDataViewModel) {
 
                                 // Wind direction
                                 Text(
-                                    text = "Direction ${currentData.windSpeed} °",
+                                    text = "Direction ${weatherDataViewModel.getWindDirection(currentData.windDirection)} (${currentData.windDirection} °)",
                                     textAlign = TextAlign.Start,
                                     fontSize = 16.sp,
                                     color = Color.Transparent.compositeOver(
                                         MaterialTheme.colorScheme.onSecondaryContainer)
                                 )
                             }
-
-                            // Weather code icon
-                            Icon(
-                                painter = painterResource(id = R.drawable.outline_air),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .align(alignment = Alignment.CenterVertically),
-                            )
                         }
                     }
                 }

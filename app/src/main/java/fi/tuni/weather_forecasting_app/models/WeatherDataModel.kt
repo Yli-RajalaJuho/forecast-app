@@ -21,7 +21,8 @@ data class WeatherCurrent(
     val temperature_2m: Double?,
     val apparent_temperature: Double?,
     val weather_code: Int?,
-    val wind_speed_10m: Double?
+    val wind_speed_10m: Double?,
+    val wind_direction_10m: Int?,
 )
 
 // Class that is represented to the user
@@ -32,6 +33,7 @@ data class SimplifiedWeatherData(
     val apparentTemperature: Double,
     val weatherCode: WeatherCode,
     val windSpeed: Double,
+    val windDirection: Int,
 )
 
 data class WeatherCode(val code: Int, val conditions: String, val backgroundImage: Int, val weatherIcon: Int)

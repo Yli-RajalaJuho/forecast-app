@@ -50,7 +50,7 @@ object ForecastRepository {
         current: String,
         hourly: String, past:
         Int, forecast: Int,
-        windSpeedUnit: String
+        windSpeedUnit: String,
     ): WeatherDataResponse {
 
         return service.getWeatherForecast(latitude, longitude, current, hourly, past, forecast, windSpeedUnit)
@@ -64,6 +64,7 @@ object ForecastRepository {
         val apparentTemperature: Double? = weatherData?.apparent_temperature
         val responseWeatherCode: Int? = weatherData?.weather_code
         val windSpeed: Double? = weatherData?.wind_speed_10m
+        val windDirection: Int? = weatherData?.wind_direction_10m
 
         // If there is no data from the api then return null
         if (weatherData != null) {
@@ -99,7 +100,8 @@ object ForecastRepository {
                 temperature = temperature ?: 0.0, // replace null
                 apparentTemperature = apparentTemperature ?: 0.0, // replace null
                 weatherCode = weatherCode ?: initialWeatherCodes[0], // no data weather code
-                windSpeed = windSpeed ?: 0.0 // replace null
+                windSpeed = windSpeed ?: 0.0, // replace null
+                windDirection = windDirection ?: 0 // replace null
             )
         }
 
@@ -148,7 +150,8 @@ object ForecastRepository {
                                 temperature = temperatures?.get(i) ?: 0.0, // replace null
                                 apparentTemperature = 0.0, // replace null
                                 weatherCode = weatherCode ?: initialWeatherCodes[0], // no data weather code
-                                windSpeed = 0.0 // replace null
+                                windSpeed = 0.0, // replace null
+                                windDirection = 0, // replace null
                             )
                         )
                     }
