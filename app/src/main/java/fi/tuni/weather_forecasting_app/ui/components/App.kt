@@ -66,6 +66,7 @@ fun App() {
             // Navigate to home screen
             HomeScreen(navController, weekViewModel, weatherDataViewModel)
         }
+
         composable("weeks-weather-screen/{week}") {backStackEntry ->
 
             val week = backStackEntry.arguments?.getString("week")

@@ -174,7 +174,7 @@ fun ForecastOfTheWeek(
                 }
             }
 
-            // ForecastOfTheWeek
+            // ForecastOfTheDay
             Box(modifier = Modifier.zIndex(0f),) {
                 ForecastOfTheDay(week[day].date, getOpacity(), weatherDataViewModel)
             }

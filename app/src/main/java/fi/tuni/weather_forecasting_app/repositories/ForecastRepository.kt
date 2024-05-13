@@ -48,8 +48,9 @@ object ForecastRepository {
         latitude: Double,
         longitude: Double,
         current: String,
-        hourly: String, past:
-        Int, forecast: Int,
+        hourly: String,
+        past: Int,
+        forecast: Int,
         windSpeedUnit: String,
     ): WeatherDataResponse {
 
@@ -113,7 +114,10 @@ object ForecastRepository {
 
         val timeStamps: List<String?>? = weatherData?.time
         val temperatures: List<Double?>? = weatherData?.temperature_2m
+        val apparentTemperatures: List<Double?>? = weatherData?.apparent_temperature
         val weatherCodes: List<Int?>? = weatherData?.weather_code
+        val windSpeeds: List<Double?>? = weatherData?.wind_speed_10m
+        val windDirections: List<Int?>? = weatherData?.wind_direction_10m
 
         // Try catch block to avoid out of bounds exception
         // in case the weather data holds lists that differ in length
@@ -148,10 +152,10 @@ object ForecastRepository {
                                 date = dates?.get(i) ?: "No Data",
                                 hour = hours?.get(i) ?: "No Data",
                                 temperature = temperatures?.get(i) ?: 0.0, // replace null
-                                apparentTemperature = 0.0, // replace null
-                                weatherCode = weatherCode ?: initialWeatherCodes[0], // no data weather code
-                                windSpeed = 0.0, // replace null
-                                windDirection = 0, // replace null
+                                apparentTemperature = apparentTemperatures?.get(i) ?: 0.0, // replace null
+                                weatherCode = weatherCode ?: initialWeatherCodes[0], // no data weather code object
+                                windSpeed = windSpeeds?.get(i) ?: 0.0, // replace null
+                                windDirection = windDirections?.get(i) ?: 0, // replace null
                             )
                         )
                     }

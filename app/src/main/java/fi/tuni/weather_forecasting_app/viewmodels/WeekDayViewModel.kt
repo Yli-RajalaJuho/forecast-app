@@ -1,9 +1,7 @@
 package fi.tuni.weather_forecasting_app.viewmodels
 
 import android.icu.util.Calendar
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,7 +10,6 @@ import fi.tuni.weather_forecasting_app.models.WeekList
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.util.Date
 
 class WeekDayViewModel: ViewModel() {
 

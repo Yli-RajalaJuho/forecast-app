@@ -42,7 +42,7 @@ class WeatherDataViewModel(
     val currentDataToFetch get() = _currentDataToFetch
 
     // What hourly data to fetch (changed from the settings)
-    private val _initialHourlyFetch = "temperature_2m,weather_code"
+    private val _initialHourlyFetch = "temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m"
     private val _hourlyDataToFetch: MutableState<String?> = mutableStateOf(_initialHourlyFetch)
     val hourlyDataToFetch get() = _hourlyDataToFetch
 
