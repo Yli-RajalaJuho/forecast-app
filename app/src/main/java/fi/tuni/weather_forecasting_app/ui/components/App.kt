@@ -11,7 +11,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import fi.tuni.weather_forecasting_app.ui.components.screens.HomeScreen
+import fi.tuni.weather_forecasting_app.ui.components.screens.SettingsScreen
 import fi.tuni.weather_forecasting_app.ui.components.screens.WeeksWeatherScreen
+import fi.tuni.weather_forecasting_app.ui.components.ui_parts.NavBar
+import fi.tuni.weather_forecasting_app.viewmodels.NavigationItemsViewModel
 import fi.tuni.weather_forecasting_app.viewmodels.WeatherDataViewModel
 import fi.tuni.weather_forecasting_app.viewmodels.WeekDayViewModel
 
@@ -56,6 +59,8 @@ fun App() {
     // Remember the view models outside of the composable
     val weekViewModel: WeekDayViewModel = viewModel()
     val weatherDataViewModel: WeatherDataViewModel = viewModel()
+    val navigationItemsViewModel: NavigationItemsViewModel = viewModel()
+
 
     // Settings
     // val settingsViewModel: SettingsViewModel = viewModel()
@@ -64,7 +69,12 @@ fun App() {
     NavHost(navController = navController, startDestination = "home-screen") {
         composable("home-screen") {
             // Navigate to home screen
-            HomeScreen(navController, weekViewModel, weatherDataViewModel)
+            HomeScreen(
+                navController,
+                navigationItemsViewModel,
+                weekViewModel,
+                weatherDataViewModel
+            )
         }
 
         composable("weeks-weather-screen/{week}") {backStackEntry ->
@@ -72,7 +82,23 @@ fun App() {
             val week = backStackEntry.arguments?.getString("week")
 
             // Navigate to weeks weather screen with the week and the view models
-            WeeksWeatherScreen(navController, weekViewModel, weatherDataViewModel, week)
+            WeeksWeatherScreen(
+                navController,
+                navigationItemsViewModel,
+                weekViewModel,
+                weatherDataViewModel,
+                week
+            )
+        }
+
+        composable("settings-screen") {
+            // Navigate to weeks weather screen with the week and the view models
+            SettingsScreen(
+                navController,
+                navigationItemsViewModel,
+                weekViewModel,
+                weatherDataViewModel
+            )
         }
     }
 }

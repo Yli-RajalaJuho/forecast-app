@@ -29,7 +29,6 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = Pink80,
     */
 
-    // navigation bar
     primaryContainer = Grey10,
     onPrimaryContainer = Grey99,
 
@@ -59,7 +58,6 @@ private val LightColorScheme = lightColorScheme(
     tertiary = Pink40,
      */
 
-    // navigation bar
     primaryContainer = Grey10,
     onPrimaryContainer = Grey99,
 
