@@ -1,5 +1,6 @@
 package fi.tuni.weather_forecasting_app.ui.components.ui_parts
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,8 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.text.font.FontWeight
@@ -41,10 +46,10 @@ fun ForecastOfTheWeek(
     weatherDataViewModel: WeatherDataViewModel
 ) {
     // current days index for pager states initialization
-    val currentDayIndex: Int = weekViewModel.getCurrentDayIndex()
+    val currentDayIndex: Int? = weekViewModel.getCurrentDayIndex(week)
 
     // current index of the carousel
-    val pagerState = rememberPagerState(initialPage = currentDayIndex) { week.size }
+    val pagerState = rememberPagerState(initialPage = currentDayIndex ?: 0) { week.size }
 
     // for changing the pager state with a button
     val scrollDirection = remember { mutableStateOf(0) }
@@ -132,15 +137,35 @@ fun ForecastOfTheWeek(
                                 .compositeOver(MaterialTheme.colorScheme.onPrimaryContainer)
 
                         )
-                        // date
-                        Text(
-                            text = week[day].date,
-                            fontSize = 12.sp,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center,
-                            color = Color.Transparent
-                                .compositeOver(MaterialTheme.colorScheme.onPrimaryContainer)
-                        )
+                        if (day == currentDayIndex) {
+                            Box(
+                                modifier = Modifier
+                                    .clip(shape = RoundedCornerShape(20.dp))
+                                    .background(color = Color.Transparent
+                                        .compositeOver(MaterialTheme.colorScheme.tertiary)
+                                    )
+                            ) {
+                                // date
+                                Text(
+                                    text = week[day].date,
+                                    fontSize = 12.sp,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                    color = Color.Transparent
+                                        .compositeOver(MaterialTheme.colorScheme.onTertiary)
+                                )
+                            }
+                        } else {
+                            // date
+                            Text(
+                                text = week[day].date,
+                                fontSize = 12.sp,
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center,
+                                color = Color.Transparent
+                                    .compositeOver(MaterialTheme.colorScheme.onPrimaryContainer)
+                            )
+                        }
                     }
 
                     Box(modifier = Modifier.weight(1f)) {

@@ -1,7 +1,6 @@
 package fi.tuni.weather_forecasting_app.ui.components.screens
 
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable

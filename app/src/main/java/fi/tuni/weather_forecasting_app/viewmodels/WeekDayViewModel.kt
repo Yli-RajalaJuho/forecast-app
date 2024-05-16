@@ -1,6 +1,7 @@
 package fi.tuni.weather_forecasting_app.viewmodels
 
 import android.icu.util.Calendar
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
@@ -10,6 +11,8 @@ import fi.tuni.weather_forecasting_app.models.WeekList
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class WeekDayViewModel: ViewModel() {
 
@@ -26,17 +29,17 @@ class WeekDayViewModel: ViewModel() {
     val nextWeek: List<Day> get() = _nextWeek
 
     // return the index for current day of the week
-    fun getCurrentDayIndex(): Int {
-        val week: List<String> = listOf(
-            "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
-        val todayIndex = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
+    fun getCurrentDayIndex(week: List<Day>): Int? {
+        val format: DateFormat = SimpleDateFormat.getDateInstance()
+        val calendar: Calendar = Calendar.getInstance()
+        val date: String = format.format(calendar.time)
 
-        _currentWeek.forEach() {
-            if(it.name == week[todayIndex - 1]) {
-                return it.id
+        for (day in week) {
+            if (day.date == date) {
+                return day.id
             }
         }
-        return 0
+        return null
     }
 
     private fun initializeWeek(startingDayIndex: Int): List<Day> {

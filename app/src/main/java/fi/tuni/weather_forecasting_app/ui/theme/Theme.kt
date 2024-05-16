@@ -29,6 +29,9 @@ private val DarkColorScheme = darkColorScheme(
     tertiary = Pink80,
     */
 
+    tertiary = Grey99,
+    onTertiary = Grey10,
+
     primaryContainer = Grey10,
     onPrimaryContainer = Grey99,
 
@@ -57,6 +60,9 @@ private val LightColorScheme = lightColorScheme(
     secondary = PurpleGrey40,
     tertiary = Pink40,
      */
+
+    tertiary = Grey99,
+    onTertiary = Grey10,
 
     primaryContainer = Grey10,
     onPrimaryContainer = Grey99,
@@ -131,6 +137,8 @@ private val IndigoGradientLight = Brush.linearGradient(
     end = Offset(800f, 0f)
 )
 
+
+
 @Composable
 fun Weather_forecasting_appTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -166,11 +174,13 @@ fun Weather_forecasting_appTheme(
     )
 }
 
+
 @Composable
 fun IndigoGradientBackground(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable ColumnScope.() -> Unit
 ) {
+
     if (darkTheme) {
         Column(
             modifier = Modifier.background(IndigoGradientDark),

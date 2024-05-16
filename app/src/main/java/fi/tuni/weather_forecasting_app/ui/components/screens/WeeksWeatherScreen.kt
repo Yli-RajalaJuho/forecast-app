@@ -37,9 +37,7 @@ fun WeeksWeatherScreen(
 
         // Content of the screen
         IndigoGradientBackground {
-            Column {
-                ForecastOfTheWeek(displayWeek, weekViewModel, weatherDataViewModel)
-            }
+            ForecastOfTheWeek(displayWeek, weekViewModel, weatherDataViewModel)
         }
     }
 }

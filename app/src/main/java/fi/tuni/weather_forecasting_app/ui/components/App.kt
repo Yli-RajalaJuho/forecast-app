@@ -13,7 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import fi.tuni.weather_forecasting_app.ui.components.screens.HomeScreen
 import fi.tuni.weather_forecasting_app.ui.components.screens.SettingsScreen
 import fi.tuni.weather_forecasting_app.ui.components.screens.WeeksWeatherScreen
-import fi.tuni.weather_forecasting_app.ui.components.ui_parts.NavBar
 import fi.tuni.weather_forecasting_app.viewmodels.NavigationItemsViewModel
 import fi.tuni.weather_forecasting_app.viewmodels.WeatherDataViewModel
 import fi.tuni.weather_forecasting_app.viewmodels.WeekDayViewModel
@@ -60,10 +59,6 @@ fun App() {
     val weekViewModel: WeekDayViewModel = viewModel()
     val weatherDataViewModel: WeatherDataViewModel = viewModel()
     val navigationItemsViewModel: NavigationItemsViewModel = viewModel()
-
-
-    // Settings
-    // val settingsViewModel: SettingsViewModel = viewModel()
 
 
     NavHost(navController = navController, startDestination = "home-screen") {

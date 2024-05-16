@@ -31,6 +31,7 @@ fun SettingsScreen(
         IndigoGradientBackground {
             Column(modifier = Modifier.fillMaxSize()) {
 
+
             }
         }
     }

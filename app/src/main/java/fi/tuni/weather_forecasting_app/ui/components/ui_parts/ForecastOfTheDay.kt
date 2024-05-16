@@ -2,7 +2,6 @@ package fi.tuni.weather_forecasting_app.ui.components.ui_parts
 
 import android.icu.util.Calendar
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -42,12 +41,10 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fi.tuni.weather_forecasting_app.R
@@ -135,7 +132,7 @@ fun ForecastOfTheDay(
 
                         Column {
                             Box(
-                                modifier = Modifier.height(100.dp)
+                                modifier = Modifier.height(120.dp)
                             ) {
                                 // Background
                                 Image(
@@ -164,6 +161,7 @@ fun ForecastOfTheDay(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
 
+                                    // Hour
                                     Text(
                                         modifier = Modifier
                                             .weight(1f)
@@ -173,6 +171,8 @@ fun ForecastOfTheDay(
                                         color = Color.Transparent.compositeOver(
                                             MaterialTheme.colorScheme.onSecondaryContainer)
                                     )
+                                    
+                                    // Temperature and weather condition
                                     Column(
                                         modifier = Modifier.weight(2f),
                                         verticalArrangement = Arrangement.Center,
@@ -196,6 +196,7 @@ fun ForecastOfTheDay(
                                         )
                                     }
 
+                                    // Weather condition icon
                                     Icon(
                                         painter = painterResource(id = hourlyData[it].weatherCode.weatherIcon),
                                         contentDescription = null,
@@ -205,6 +206,22 @@ fun ForecastOfTheDay(
                                             .padding(20.dp),
                                         tint = Color.Transparent.compositeOver(
                                             MaterialTheme.colorScheme.onSecondaryContainer)
+                                    )
+                                }
+
+                                if (expandedItemIndex != it) {
+                                    Text(
+                                        text = "more details",
+                                        fontSize = 12.sp,
+                                        textAlign = TextAlign.Center,
+                                        color = Color.Transparent.compositeOver(
+                                            MaterialTheme.colorScheme.onSecondaryContainer
+                                        ),
+                                        modifier = Modifier
+                                            .padding(bottom = 5.dp)
+                                            .align(
+                                                Alignment.BottomCenter
+                                            )
                                     )
                                 }
                             }
