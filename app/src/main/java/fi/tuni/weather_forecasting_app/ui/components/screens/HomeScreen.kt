@@ -11,11 +11,13 @@ import fi.tuni.weather_forecasting_app.ui.components.ui_parts.NavBar
 import fi.tuni.weather_forecasting_app.ui.components.ui_parts.WeekSelector
 import fi.tuni.weather_forecasting_app.ui.theme.IndigoGradientBackground
 import fi.tuni.weather_forecasting_app.viewmodels.NavigationItemsViewModel
+import fi.tuni.weather_forecasting_app.viewmodels.SettingsViewModel
 import fi.tuni.weather_forecasting_app.viewmodels.WeatherDataViewModel
 import fi.tuni.weather_forecasting_app.viewmodels.WeekDayViewModel
 
 @Composable
 fun HomeScreen(
+    settings: SettingsViewModel,
     navController : NavController,
     navigationItemsViewModel: NavigationItemsViewModel,
     weekViewModel: WeekDayViewModel,
@@ -26,7 +28,7 @@ fun HomeScreen(
     NavBar(navController, navigationItemsViewModel, "Home", "home") {
 
         // Content of the screen
-        IndigoGradientBackground {
+        IndigoGradientBackground(settings) {
             Column(modifier = Modifier.fillMaxSize()) {
 
                 // Forecasts

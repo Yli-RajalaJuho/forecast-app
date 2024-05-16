@@ -88,7 +88,6 @@ class WeatherDataViewModel(
                     _hourlyDataToFetch.value ?: _initialHourlyFetch,
                     14,
                     14,
-                    "ms"
                 )
 
                 _forecastData.value = ForecastRepository.generateSimplifiedHourlyData(response.hourly)

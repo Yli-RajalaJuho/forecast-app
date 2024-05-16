@@ -14,11 +14,12 @@ import fi.tuni.weather_forecasting_app.ui.components.screens.HomeScreen
 import fi.tuni.weather_forecasting_app.ui.components.screens.SettingsScreen
 import fi.tuni.weather_forecasting_app.ui.components.screens.WeeksWeatherScreen
 import fi.tuni.weather_forecasting_app.viewmodels.NavigationItemsViewModel
+import fi.tuni.weather_forecasting_app.viewmodels.SettingsViewModel
 import fi.tuni.weather_forecasting_app.viewmodels.WeatherDataViewModel
 import fi.tuni.weather_forecasting_app.viewmodels.WeekDayViewModel
 
 @Composable
-fun App() {
+fun App(settings: SettingsViewModel) {
     // request permissions for the app
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
@@ -65,6 +66,7 @@ fun App() {
         composable("home-screen") {
             // Navigate to home screen
             HomeScreen(
+                settings,
                 navController,
                 navigationItemsViewModel,
                 weekViewModel,
@@ -78,6 +80,7 @@ fun App() {
 
             // Navigate to weeks weather screen with the week and the view models
             WeeksWeatherScreen(
+                settings,
                 navController,
                 navigationItemsViewModel,
                 weekViewModel,
@@ -89,6 +92,7 @@ fun App() {
         composable("settings-screen") {
             // Navigate to weeks weather screen with the week and the view models
             SettingsScreen(
+                settings,
                 navController,
                 navigationItemsViewModel,
                 weekViewModel,

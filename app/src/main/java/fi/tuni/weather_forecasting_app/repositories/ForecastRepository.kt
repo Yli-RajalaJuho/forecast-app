@@ -26,7 +26,8 @@ interface WeatherApiService {
         @Query("hourly") hourly: String,
         @Query("past_days") past: Int,
         @Query("forecast_days") forecast: Int,
-        @Query("wind_speed_unit") windSpeedUnit: String,
+        @Query("temperature_unit") temperatureUnit: String = "celsius",
+        @Query("wind_speed_unit") windSpeedUnit: String = "ms",
     ): WeatherDataResponse
 }
 
@@ -51,10 +52,20 @@ object ForecastRepository {
         hourly: String,
         past: Int,
         forecast: Int,
+        temperatureUnit: String,
         windSpeedUnit: String,
     ): WeatherDataResponse {
 
-        return service.getWeatherForecast(latitude, longitude, current, hourly, past, forecast, windSpeedUnit)
+        return service.getWeatherForecast(
+            latitude,
+            longitude,
+            current,
+            hourly,
+            past,
+            forecast,
+            temperatureUnit,
+            windSpeedUnit
+        )
     }
 
     // Generate simplified data object of current data
