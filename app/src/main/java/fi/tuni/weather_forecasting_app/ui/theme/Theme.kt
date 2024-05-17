@@ -201,6 +201,7 @@ fun Weather_forecasting_appTheme(
             SideEffect {
                 val window = (view.context as Activity).window
                 window.statusBarColor = colorScheme.primary.toArgb()
+                window.navigationBarColor = colorScheme.primary.toArgb()
                 WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
                     !darkTheme
             }
@@ -211,6 +212,7 @@ fun Weather_forecasting_appTheme(
             SideEffect {
                 val window = (view.context as Activity).window
                 window.statusBarColor = colorScheme.primary.toArgb()
+                window.navigationBarColor = colorScheme.primary.toArgb()
                 WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
                     theme != "dark"
             }
