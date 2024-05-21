@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
@@ -24,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.text.font.FontWeight
@@ -130,14 +132,23 @@ fun WeekSelector(navController: NavController) {
 
                         )
                         // description
-                        Text(
-                            text = "navigate to forecast",
-                            fontSize = 12.sp,
-                            modifier = Modifier.fillMaxWidth(),
-                            maxLines = 1,
-                            textAlign = TextAlign.Center,
-                            color = Color.Transparent.compositeOver(MaterialTheme.colorScheme.onPrimaryContainer)
-                        )
+                        Box(
+                            modifier = Modifier
+                                .clip(shape = RoundedCornerShape(20.dp))
+                                .background(color = Color.Transparent.compositeOver(
+                                    MaterialTheme.colorScheme.secondary)
+                                        .copy(alpha = 0.1f)
+                                )
+                        ) {
+                            Text(
+                                text = "show forecast",
+                                fontSize = 12.sp,
+                                modifier = Modifier.fillMaxWidth(),
+                                maxLines = 1,
+                                textAlign = TextAlign.Center,
+                                color = Color.Transparent.compositeOver(MaterialTheme.colorScheme.onPrimaryContainer)
+                            )
+                        }
                     }
 
                     Box(modifier = Modifier.weight(1f)) {

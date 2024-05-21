@@ -6,6 +6,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -58,8 +60,20 @@ fun App(settings: SettingsViewModel) {
 
     // Remember the view models outside of the composable
     val weekViewModel: WeekDayViewModel = viewModel()
-    val weatherDataViewModel: WeatherDataViewModel = viewModel()
     val navigationItemsViewModel: NavigationItemsViewModel = viewModel()
+    val weatherDataViewModel: WeatherDataViewModel = viewModel()
+
+
+    val tempUnit by settings.temperatureUnit.collectAsState()
+    val windSpeedUnit by settings.windSpeedUnit.collectAsState()
+
+    if (weatherDataViewModel.tempUnit.value != tempUnit) {
+        weatherDataViewModel.setTemperatureUnit(tempUnit)
+    }
+
+    if (weatherDataViewModel.windSpeedUnit.value != windSpeedUnit) {
+        weatherDataViewModel.setWindSpeedUnit(windSpeedUnit)
+    }
 
 
     NavHost(navController = navController, startDestination = "home-screen") {

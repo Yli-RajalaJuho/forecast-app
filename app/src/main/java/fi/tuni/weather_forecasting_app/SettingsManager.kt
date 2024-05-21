@@ -17,6 +17,7 @@ class PreferencesManager(context: Context) {
     companion object {
         val THEME_MODE_KEY = stringPreferencesKey("THEME_MODE")
         val TEMPERATURE_UNIT_KEY = stringPreferencesKey("TEMPERATURE_UNIT")
+        val WIND_SPEED_UNIT_KEY = stringPreferencesKey("WIND_SPEED_UNIT")
     }
 
     val themeModeFlow: Flow<String> = dataStore.data.map { preferences ->
@@ -25,6 +26,10 @@ class PreferencesManager(context: Context) {
 
     val temperatureUnitFlow: Flow<String> = dataStore.data.map { preferences ->
         preferences[TEMPERATURE_UNIT_KEY] ?: "celsius"
+    }
+
+    val windSpeedUnitFlow: Flow<String> = dataStore.data.map { preferences ->
+        preferences[WIND_SPEED_UNIT_KEY] ?: "ms"
     }
 
     suspend fun saveThemeMode(themeMode: String) {
@@ -36,6 +41,12 @@ class PreferencesManager(context: Context) {
     suspend fun saveTemperatureUnit(temperatureUnit: String) {
         dataStore.edit { preferences ->
             preferences[TEMPERATURE_UNIT_KEY] = temperatureUnit
+        }
+    }
+
+    suspend fun saveWindSpeedUnit(windSpeedUnit: String) {
+        dataStore.edit { preferences ->
+            preferences[WIND_SPEED_UNIT_KEY] = windSpeedUnit
         }
     }
 }

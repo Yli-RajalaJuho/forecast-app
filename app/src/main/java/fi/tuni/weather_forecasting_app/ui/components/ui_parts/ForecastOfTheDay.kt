@@ -190,7 +190,9 @@ fun ForecastOfTheDay(
                                             modifier = Modifier.fillMaxWidth(),
                                             textAlign = TextAlign.Center,
                                             fontWeight = FontWeight.Bold,
-                                            text = "${hourlyData[it].temperature} °C",
+                                            text = "${hourlyData[it].temperature} " +
+                                                    if (forecastViewModel.tempUnit.value == "fahrenheit") "°F"
+                                                    else "°C",
                                             color = Color.Transparent.compositeOver(
                                                 MaterialTheme.colorScheme.onSecondaryContainer)
                                         )
@@ -262,7 +264,9 @@ fun ForecastOfTheDay(
                                             ) {
                                                 // Wind speed in m/s
                                                 Text(
-                                                    text = "Speed ${hourlyData[it].windSpeed} m/s",
+                                                    text = "Speed ${hourlyData[it].windSpeed} " +
+                                                            if (forecastViewModel.windSpeedUnit.value == "mph") "mph"
+                                                            else "m/s",
                                                     textAlign = TextAlign.Start,
                                                     fontSize = 12.sp,
                                                     color = Color.Transparent.compositeOver(

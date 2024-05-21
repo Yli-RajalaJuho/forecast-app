@@ -17,10 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 
-class WeatherDataViewModel(
-    application: Application,
-    //private val settingsViewModel: SettingsViewModel
-): AndroidViewModel(application) {
+class WeatherDataViewModel(application: Application): AndroidViewModel(application) {
 
     private val locationRepository = LocationRepository(application)
 
@@ -36,15 +33,35 @@ class WeatherDataViewModel(
     private val _isRefreshing = mutableStateOf(false)
     val isRefreshing get() = _isRefreshing
 
-    // What current data to fetch (changed from the settings)
+    // Temperature unit
+    private val _tempUnit: MutableState<String> = mutableStateOf("celsius")
+    val tempUnit: MutableState<String> get() = _tempUnit
+
+    // Wind speed unit
+    private val _windSpeedUnit: MutableState<String> = mutableStateOf("ms")
+    val windSpeedUnit: MutableState<String> get() = _windSpeedUnit
+
+    // What current data to fetch
     private val _initialCurrentFetch = "temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m"
     private val _currentDataToFetch: MutableState<String?> = mutableStateOf(_initialCurrentFetch)
     val currentDataToFetch get() = _currentDataToFetch
 
-    // What hourly data to fetch (changed from the settings)
+    // What hourly data to fetch
     private val _initialHourlyFetch = "temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m"
     private val _hourlyDataToFetch: MutableState<String?> = mutableStateOf(_initialHourlyFetch)
     val hourlyDataToFetch get() = _hourlyDataToFetch
+
+    // Change the temperature unit
+    fun setTemperatureUnit(newUnit: String) {
+        _tempUnit.value = newUnit
+        refreshWeatherData()
+    }
+
+    // Change the wind speed unit
+    fun setWindSpeedUnit(newUnit: String) {
+        _windSpeedUnit.value = newUnit
+        refreshWeatherData()
+    }
 
     // Returns a list generated from the forecastData based on given date
     fun getHourlyData(date: String): List<SimplifiedWeatherData> {
@@ -88,6 +105,8 @@ class WeatherDataViewModel(
                     _hourlyDataToFetch.value ?: _initialHourlyFetch,
                     14,
                     14,
+                    temperatureUnit = tempUnit.value,
+                    windSpeedUnit = windSpeedUnit.value,
                 )
 
                 _forecastData.value = ForecastRepository.generateSimplifiedHourlyData(response.hourly)

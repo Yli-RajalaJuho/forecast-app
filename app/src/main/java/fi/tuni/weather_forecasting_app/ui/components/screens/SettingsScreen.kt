@@ -11,12 +11,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,6 +49,19 @@ fun SettingsScreen(
 ) {
 
     val theme by settings.theme.collectAsState()
+    val tempUnit by settings.temperatureUnit.collectAsState()
+    val windSpeedUnit by settings.windSpeedUnit.collectAsState()
+
+    // Observe changes in temperature unit and update WeatherDataViewModel
+    LaunchedEffect(tempUnit) {
+        weatherDataViewModel.setTemperatureUnit(tempUnit)
+    }
+
+    // Observe changes in wind speed unit and update WeatherDataViewModel
+    LaunchedEffect(windSpeedUnit) {
+        weatherDataViewModel.setWindSpeedUnit(windSpeedUnit)
+    }
+
 
     // Remember the currently expanded item index
     var expandedItem by remember { mutableStateOf("") }
@@ -68,13 +83,20 @@ fun SettingsScreen(
                 )
         ) {
 
+            // Theme control
             item {
                 Box(modifier = Modifier
-                    .padding(top = 20.dp)
+                    .padding(top = 20.dp, start = 10.dp, end = 10.dp)
                     .fillMaxWidth()
                     .clickable {
                         expandedItem = if (expandedItem == "theme") "" else "theme"
                     }
+                    .background(
+                        shape = RoundedCornerShape(20.dp),
+                        color = Color.Transparent.compositeOver(
+                            MaterialTheme.colorScheme.secondary
+                        )
+                    )
                 ) {
                     Column(
                         modifier = Modifier.padding(20.dp),
@@ -86,63 +108,74 @@ fun SettingsScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                modifier = Modifier.padding(start = 20.dp),
+                                modifier = Modifier
+                                    .padding(start = 20.dp)
+                                    .weight(1f),
                                 text = "Theme",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.Transparent.compositeOver(
-                                    MaterialTheme.colorScheme.onPrimary
+                                    MaterialTheme.colorScheme.onSecondary
                                 )
                             )
 
-                            Text(
-                                modifier = Modifier.padding(end = 40.dp),
-                                text = theme.replaceFirstChar {
-                                    if (it.isLowerCase()) it.titlecase(
-                                        Locale.ROOT
-                                    ) else it.toString()
-                                },
-                                fontSize = 16.sp,
-                                color = Color.Transparent.compositeOver(
-                                    MaterialTheme.colorScheme.onPrimary
+                            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                                Text(
+                                    modifier = Modifier.align(Alignment.Center),
+                                    text = theme.replaceFirstChar {
+                                        if (it.isLowerCase()) it.titlecase(
+                                            Locale.ROOT
+                                        ) else it.toString()
+                                    },
+                                    fontSize = 16.sp,
+                                    color = Color.Transparent.compositeOver(
+                                        MaterialTheme.colorScheme.onSecondary
+                                    )
                                 )
-                            )
+                            }
                         }
 
                         HorizontalDivider(
                             modifier = Modifier.padding(10.dp),
                             color = Color.Transparent.compositeOver(
-                                MaterialTheme.colorScheme.onPrimary
+                                MaterialTheme.colorScheme.onSecondary
                             )
                         )
 
                         if (expandedItem == "theme") {
 
                             Row(
-                                verticalAlignment = Alignment.CenterVertically
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
 
                                 Column(
                                     modifier = Modifier.weight(1f),
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Text(text = "Default", fontWeight = FontWeight.Bold)
+                                    Text(
+                                        text = "Default",
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Transparent.compositeOver(
+                                            MaterialTheme.colorScheme.onSecondary
+                                        )
+                                    )
 
                                     RadioButton(
                                         selected = theme == "default",
                                         onClick = { settings.setTheme("default") },
                                         colors = RadioButtonColors(
                                             selectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onPrimary
+                                                MaterialTheme.colorScheme.onSecondary
                                             ),
                                             unselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onPrimary
+                                                MaterialTheme.colorScheme.onSecondary
                                             ).copy(alpha = 0.5f),
                                             disabledSelectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onPrimary
+                                                MaterialTheme.colorScheme.onSecondary
                                             ),
                                             disabledUnselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onPrimary
+                                                MaterialTheme.colorScheme.onSecondary
                                             )
                                         )
                                     )
@@ -152,23 +185,29 @@ fun SettingsScreen(
                                     modifier = Modifier.weight(1f),
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Text(text = "Light", fontWeight = FontWeight.Bold)
+                                    Text(
+                                        text = "Light",
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Transparent.compositeOver(
+                                            MaterialTheme.colorScheme.onSecondary
+                                        )
+                                    )
 
                                     RadioButton(
                                         selected = theme == "light",
                                         onClick = { settings.setTheme("light") },
                                         colors = RadioButtonColors(
                                             selectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onPrimary
+                                                MaterialTheme.colorScheme.onSecondary
                                             ),
                                             unselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onPrimary
+                                                MaterialTheme.colorScheme.onSecondary
                                             ).copy(alpha = 0.5f),
                                             disabledSelectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onPrimary
+                                                MaterialTheme.colorScheme.onSecondary
                                             ),
                                             disabledUnselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onPrimary
+                                                MaterialTheme.colorScheme.onSecondary
                                             )
                                         )
                                     )
@@ -178,23 +217,29 @@ fun SettingsScreen(
                                     modifier = Modifier.weight(1f),
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
-                                    Text(text = "Dark", fontWeight = FontWeight.Bold)
+                                    Text(
+                                        text = "Dark",
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Transparent.compositeOver(
+                                            MaterialTheme.colorScheme.onSecondary
+                                        )
+                                    )
 
                                     RadioButton(
                                         selected = theme == "dark",
                                         onClick = { settings.setTheme("dark") },
                                         colors = RadioButtonColors(
                                             selectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onPrimary
+                                                MaterialTheme.colorScheme.onSecondary
                                             ),
                                             unselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onPrimary
+                                                MaterialTheme.colorScheme.onSecondary
                                             ).copy(alpha = 0.5f),
                                             disabledSelectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onPrimary
+                                                MaterialTheme.colorScheme.onSecondary
                                             ),
                                             disabledUnselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onPrimary
+                                                MaterialTheme.colorScheme.onSecondary
                                             )
                                         )
                                     )
@@ -206,9 +251,274 @@ fun SettingsScreen(
                                 text = "(Default is the device's current theme.)",
                                 fontSize = 12.sp,
                                 color = Color.Transparent.compositeOver(
-                                    MaterialTheme.colorScheme.onPrimary
+                                    MaterialTheme.colorScheme.onSecondary
                                 )
                             )
+                        }
+                    }
+                }
+            }
+
+            // Temperature unit control
+            item {
+                Box(modifier = Modifier
+                    .padding(top = 20.dp, start = 10.dp, end = 10.dp)
+                    .fillMaxWidth()
+                    .clickable {
+                        expandedItem =
+                            if (expandedItem == "temperatureUnit") "" else "temperatureUnit"
+                    }
+                    .background(
+                        shape = RoundedCornerShape(20.dp),
+                        color = Color.Transparent.compositeOver(
+                            MaterialTheme.colorScheme.secondary)
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        //horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .padding(start = 20.dp)
+                                    .weight(1f),
+                                text = "Temperature",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Transparent.compositeOver(
+                                    MaterialTheme.colorScheme.onSecondary
+                                )
+                            )
+
+                            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                                Text(
+                                    modifier = Modifier.align(Alignment.Center),
+                                    text = tempUnit.replaceFirstChar {
+                                        if (it.isLowerCase()) it.titlecase(
+                                            Locale.ROOT
+                                        ) else it.toString()
+                                    },
+                                    fontSize = 16.sp,
+                                    color = Color.Transparent.compositeOver(
+                                        MaterialTheme.colorScheme.onSecondary
+                                    )
+                                )
+                            }
+                        }
+
+                        HorizontalDivider(
+                            modifier = Modifier.padding(10.dp),
+                            color = Color.Transparent.compositeOver(
+                                MaterialTheme.colorScheme.onSecondary
+                            )
+                        )
+
+                        if (expandedItem == "temperatureUnit") {
+
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+
+                                Column(
+                                    modifier = Modifier.weight(1f),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = "Celsius (°C)",
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Transparent.compositeOver(
+                                            MaterialTheme.colorScheme.onSecondary
+                                        )
+                                    )
+
+                                    RadioButton(
+                                        selected = tempUnit == "celsius",
+                                        onClick = { settings.setTemperatureUnit("celsius") },
+                                        colors = RadioButtonColors(
+                                            selectedColor = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondary
+                                            ),
+                                            unselectedColor = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondary
+                                            ).copy(alpha = 0.5f),
+                                            disabledSelectedColor = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondary
+                                            ),
+                                            disabledUnselectedColor = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondary
+                                            )
+                                        )
+                                    )
+                                }
+
+                                Column(
+                                    modifier = Modifier.weight(1f),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = "Fahrenheit (°F)",
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Transparent.compositeOver(
+                                            MaterialTheme.colorScheme.onSecondary
+                                        )
+                                    )
+
+                                    RadioButton(
+                                        selected = tempUnit == "fahrenheit",
+                                        onClick = { settings.setTemperatureUnit("fahrenheit") },
+                                        colors = RadioButtonColors(
+                                            selectedColor = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondary
+                                            ),
+                                            unselectedColor = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondary
+                                            ).copy(alpha = 0.5f),
+                                            disabledSelectedColor = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondary
+                                            ),
+                                            disabledUnselectedColor = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondary
+                                            )
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Wind speed unit control
+            item {
+                Box(modifier = Modifier
+                    .padding(top = 20.dp, start = 10.dp, end = 10.dp)
+                    .fillMaxWidth()
+                    .clickable {
+                        expandedItem = if (expandedItem == "windSpeedUnit") "" else "windSpeedUnit"
+                    }
+                    .background(
+                        shape = RoundedCornerShape(20.dp),
+                        color = Color.Transparent.compositeOver(
+                            MaterialTheme.colorScheme.secondary)
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        //horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .padding(start = 20.dp)
+                                    .weight(1f),
+                                text = "Wind speed",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Transparent.compositeOver(
+                                    MaterialTheme.colorScheme.onSecondary
+                                )
+                            )
+
+                            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                                Text(
+                                    modifier = Modifier.align(Alignment.Center),
+                                    text = windSpeedUnit,
+                                    fontSize = 16.sp,
+                                    color = Color.Transparent.compositeOver(
+                                        MaterialTheme.colorScheme.onSecondary
+                                    )
+                                )
+                            }
+                        }
+
+                        HorizontalDivider(
+                            modifier = Modifier.padding(10.dp),
+                            color = Color.Transparent.compositeOver(
+                                MaterialTheme.colorScheme.onSecondary
+                            )
+                        )
+
+                        if (expandedItem == "windSpeedUnit") {
+
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+
+                                Column(
+                                    modifier = Modifier.weight(1f),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = "m/s",
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Transparent.compositeOver(
+                                            MaterialTheme.colorScheme.onSecondary
+                                        )
+                                    )
+
+                                    RadioButton(
+                                        selected = windSpeedUnit == "ms",
+                                        onClick = { settings.setWindSpeedUnit("ms") },
+                                        colors = RadioButtonColors(
+                                            selectedColor = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondary
+                                            ),
+                                            unselectedColor = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondary
+                                            ).copy(alpha = 0.5f),
+                                            disabledSelectedColor = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondary
+                                            ),
+                                            disabledUnselectedColor = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondary
+                                            )
+                                        )
+                                    )
+                                }
+
+                                Column(
+                                    modifier = Modifier.weight(1f),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = "mph",
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Transparent.compositeOver(
+                                            MaterialTheme.colorScheme.onSecondary
+                                        )
+                                    )
+
+                                    RadioButton(
+                                        selected = windSpeedUnit == "mph",
+                                        onClick = { settings.setWindSpeedUnit("mph") },
+                                        colors = RadioButtonColors(
+                                            selectedColor = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondary
+                                            ),
+                                            unselectedColor = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondary
+                                            ).copy(alpha = 0.5f),
+                                            disabledSelectedColor = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondary
+                                            ),
+                                            disabledUnselectedColor = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondary
+                                            )
+                                        )
+                                    )
+                                }
+                            }
                         }
                     }
                 }

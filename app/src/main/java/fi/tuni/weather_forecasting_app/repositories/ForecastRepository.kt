@@ -26,8 +26,8 @@ interface WeatherApiService {
         @Query("hourly") hourly: String,
         @Query("past_days") past: Int,
         @Query("forecast_days") forecast: Int,
-        @Query("temperature_unit") temperatureUnit: String = "celsius",
-        @Query("wind_speed_unit") windSpeedUnit: String = "ms",
+        @Query("temperature_unit") temperatureUnit: String,
+        @Query("wind_speed_unit") windSpeedUnit: String,
     ): WeatherDataResponse
 }
 

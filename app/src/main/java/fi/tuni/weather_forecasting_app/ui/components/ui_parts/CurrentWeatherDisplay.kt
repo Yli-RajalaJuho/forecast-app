@@ -143,7 +143,9 @@ fun CurrentWeatherDisplay(weatherDataViewModel: WeatherDataViewModel) {
 
                             // Temperature
                             Text(
-                                text = "${currentData.temperature} °C",
+                                text = "${currentData.temperature} " +
+                                        if (weatherDataViewModel.tempUnit.value == "fahrenheit") "°F"
+                                        else "°C",
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(start = 20.dp, top = 20.dp),
@@ -155,7 +157,9 @@ fun CurrentWeatherDisplay(weatherDataViewModel: WeatherDataViewModel) {
 
                             // Feels like
                             Text(
-                                text = "Feels like ${currentData.apparentTemperature} °C",
+                                text = "Feels like ${currentData.apparentTemperature} " +
+                                        if (weatherDataViewModel.tempUnit.value == "fahrenheit") "°F"
+                                        else "°C",
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(start = 20.dp, bottom = 20.dp),
@@ -248,7 +252,9 @@ fun CurrentWeatherDisplay(weatherDataViewModel: WeatherDataViewModel) {
                             ) {
                                 // Wind speed in m/s
                                 Text(
-                                    text = "Speed ${currentData.windSpeed} m/s",
+                                    text = "Speed ${currentData.windSpeed} " +
+                                            if (weatherDataViewModel.windSpeedUnit.value == "mph") "mph"
+                                            else "m/s",
                                     textAlign = TextAlign.Start,
                                     fontSize = 16.sp,
                                     color = Color.Transparent.compositeOver(
