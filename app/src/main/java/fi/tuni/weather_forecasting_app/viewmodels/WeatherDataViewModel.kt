@@ -42,12 +42,14 @@ class WeatherDataViewModel(application: Application): AndroidViewModel(applicati
     val windSpeedUnit: MutableState<String> get() = _windSpeedUnit
 
     // What current data to fetch
-    private val _initialCurrentFetch = "temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m"
+    private val _initialCurrentFetch =
+        "temperature_2m,apparent_temperature,weather_code,cloud_cover,visibility,wind_speed_10m,wind_direction_10m,uv_index"
     private val _currentDataToFetch: MutableState<String?> = mutableStateOf(_initialCurrentFetch)
     val currentDataToFetch get() = _currentDataToFetch
 
     // What hourly data to fetch
-    private val _initialHourlyFetch = "temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m"
+    private val _initialHourlyFetch =
+        "temperature_2m,apparent_temperature,weather_code,cloud_cover,visibility,wind_speed_10m,wind_direction_10m,uv_index"
     private val _hourlyDataToFetch: MutableState<String?> = mutableStateOf(_initialHourlyFetch)
     val hourlyDataToFetch get() = _hourlyDataToFetch
 

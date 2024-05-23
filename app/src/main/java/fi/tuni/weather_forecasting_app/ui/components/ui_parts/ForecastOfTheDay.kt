@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -245,6 +247,42 @@ fun ForecastOfTheDay(
                                         modifier = Modifier
                                             .padding(10.dp)
                                     ) {
+                                        Spacer(modifier = Modifier.padding(5.dp))
+
+                                        Row(modifier = Modifier.fillMaxWidth()) {
+                                            
+                                            Spacer(modifier = Modifier.weight(1f))
+
+                                            Text(
+                                                modifier = Modifier.weight(1f),
+                                                text = "Feels like",
+                                                textAlign = TextAlign.Start,
+                                                fontSize = 12.sp,
+                                                color = Color.Transparent.compositeOver(
+                                                    MaterialTheme.colorScheme.onSecondaryContainer
+                                                )
+                                            )
+
+                                            Text(
+                                                modifier = Modifier.weight(1f),
+                                                text = "${hourlyData[it].apparentTemperature} " +
+                                                        if (forecastViewModel.tempUnit.value == "fahrenheit") "°F"
+                                                        else "°C",
+                                                textAlign = TextAlign.Start,
+                                                fontSize = 12.sp,
+                                                color = Color.Transparent.compositeOver(
+                                                    MaterialTheme.colorScheme.onSecondaryContainer
+                                                )
+                                            )
+                                        }
+
+                                        HorizontalDivider(
+                                            modifier = Modifier.padding(20.dp),
+                                            color = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondaryContainer
+                                            )
+                                        )
+
                                         Row {
                                             // Wind
                                             Icon(
@@ -254,7 +292,8 @@ fun ForecastOfTheDay(
                                                     .weight(1f)
                                                     .align(alignment = Alignment.CenterVertically),
                                                 tint = Color.Transparent.compositeOver(
-                                                    MaterialTheme.colorScheme.onSecondaryContainer)
+                                                    MaterialTheme.colorScheme.onSecondaryContainer
+                                                )
                                             )
 
                                             Column(
@@ -263,26 +302,195 @@ fun ForecastOfTheDay(
                                                     .fillMaxWidth()
                                             ) {
                                                 // Wind speed in m/s
-                                                Text(
-                                                    text = "Speed ${hourlyData[it].windSpeed} " +
-                                                            if (forecastViewModel.windSpeedUnit.value == "mph") "mph"
-                                                            else "m/s",
-                                                    textAlign = TextAlign.Start,
-                                                    fontSize = 12.sp,
-                                                    color = Color.Transparent.compositeOver(
-                                                        MaterialTheme.colorScheme.onSecondaryContainer)
-                                                )
+                                                Row {
+                                                    Text(
+                                                        modifier = Modifier.weight(1f),
+                                                        text = "Speed",
+                                                        textAlign = TextAlign.Start,
+                                                        fontSize = 12.sp,
+                                                        color = Color.Transparent.compositeOver(
+                                                            MaterialTheme.colorScheme.onSecondaryContainer
+                                                        )
+                                                    )
+
+                                                    // Wind speed in m/s
+                                                    Text(
+                                                        modifier = Modifier.weight(1f),
+                                                        text = "${hourlyData[it].windSpeed} " +
+                                                                if (forecastViewModel.windSpeedUnit.value == "mph") "mph"
+                                                                else "m/s",
+                                                        textAlign = TextAlign.Start,
+                                                        fontSize = 12.sp,
+                                                        color = Color.Transparent.compositeOver(
+                                                            MaterialTheme.colorScheme.onSecondaryContainer
+                                                        )
+                                                    )
+                                                }
+
+                                                Spacer(modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(5.dp))
 
                                                 // Wind direction
-                                                Text(
-                                                    text = "Direction ${forecastViewModel.getWindDirection(hourlyData[it].windDirection)} (${hourlyData[it].windDirection} °)",
-                                                    textAlign = TextAlign.Start,
-                                                    fontSize = 12.sp,
-                                                    color = Color.Transparent.compositeOver(
-                                                        MaterialTheme.colorScheme.onSecondaryContainer)
-                                                )
+                                                Row {
+                                                    Text(
+                                                        modifier = Modifier.weight(1f),
+                                                        text = "Direction",
+                                                        textAlign = TextAlign.Start,
+                                                        fontSize = 12.sp,
+                                                        color = Color.Transparent.compositeOver(
+                                                            MaterialTheme.colorScheme.onSecondaryContainer
+                                                        )
+                                                    )
+
+                                                    // Wind direction
+                                                    Text(
+                                                        modifier = Modifier.weight(1f),
+                                                        text = "${
+                                                            forecastViewModel.getWindDirection(
+                                                                hourlyData[it].windDirection
+                                                            )
+                                                        } (${hourlyData[it].windDirection} °)",
+                                                        textAlign = TextAlign.Start,
+                                                        fontSize = 12.sp,
+                                                        color = Color.Transparent.compositeOver(
+                                                            MaterialTheme.colorScheme.onSecondaryContainer
+                                                        )
+                                                    )
+                                                }
                                             }
                                         }
+
+                                        HorizontalDivider(
+                                            modifier = Modifier.padding(20.dp),
+                                            color = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondaryContainer
+                                            )
+                                        )
+
+                                        Row {
+                                            // Cloud cover
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.outline_cloud),
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .weight(1f)
+                                                    .align(alignment = Alignment.CenterVertically),
+                                                tint = Color.Transparent.compositeOver(
+                                                    MaterialTheme.colorScheme.onSecondaryContainer
+                                                )
+                                            )
+
+                                            // Cloud cover
+                                            Text(
+                                                modifier = Modifier.weight(1f),
+                                                text = "Cloud cover",
+                                                textAlign = TextAlign.Start,
+                                                fontSize = 12.sp,
+                                                color = Color.Transparent.compositeOver(
+                                                    MaterialTheme.colorScheme.onSecondaryContainer
+                                                )
+                                            )
+
+                                            // Cloud cover %
+                                            Text(
+                                                modifier = Modifier.weight(1f),
+                                                text = "${hourlyData[it].cloudCover} %",
+                                                textAlign = TextAlign.Start,
+                                                fontSize = 12.sp,
+                                                color = Color.Transparent.compositeOver(
+                                                    MaterialTheme.colorScheme.onSecondaryContainer
+                                                )
+                                            )
+                                        }
+
+                                        HorizontalDivider(
+                                            modifier = Modifier.padding(20.dp),
+                                            color = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondaryContainer
+                                            )
+                                        )
+
+                                        Row {
+                                            // Visibility
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.outline_eye),
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .weight(1f)
+                                                    .align(alignment = Alignment.CenterVertically),
+                                                tint = Color.Transparent.compositeOver(
+                                                    MaterialTheme.colorScheme.onSecondaryContainer
+                                                )
+                                            )
+
+                                            // Visibility
+                                            Text(
+                                                modifier = Modifier.weight(1f),
+                                                text = "Visibility",
+                                                textAlign = TextAlign.Start,
+                                                fontSize = 12.sp,
+                                                color = Color.Transparent.compositeOver(
+                                                    MaterialTheme.colorScheme.onSecondaryContainer
+                                                )
+                                            )
+
+                                            // Visibility converted to km
+                                            Text(
+                                                modifier = Modifier.weight(1f),
+                                                text = "${hourlyData[it].visibility * 0.001} km",
+                                                textAlign = TextAlign.Start,
+                                                fontSize = 12.sp,
+                                                color = Color.Transparent.compositeOver(
+                                                    MaterialTheme.colorScheme.onSecondaryContainer
+                                                )
+                                            )
+                                        }
+
+                                        HorizontalDivider(
+                                            modifier = Modifier.padding(20.dp),
+                                            color = Color.Transparent.compositeOver(
+                                                MaterialTheme.colorScheme.onSecondaryContainer
+                                            )
+                                        )
+
+                                        Row {
+                                            // UV index
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.outline_wb_sunny),
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .weight(1f)
+                                                    .align(alignment = Alignment.CenterVertically),
+                                                tint = Color.Transparent.compositeOver(
+                                                    MaterialTheme.colorScheme.onSecondaryContainer
+                                                )
+                                            )
+
+                                            // UV index
+                                            Text(
+                                                modifier = Modifier.weight(1f),
+                                                text = "UV Index",
+                                                textAlign = TextAlign.Start,
+                                                fontSize = 12.sp,
+                                                color = Color.Transparent.compositeOver(
+                                                    MaterialTheme.colorScheme.onSecondaryContainer
+                                                )
+                                            )
+
+                                            // Index
+                                            Text(
+                                                modifier = Modifier.weight(1f),
+                                                text = "${hourlyData[it].uvIndex}",
+                                                textAlign = TextAlign.Start,
+                                                fontSize = 12.sp,
+                                                color = Color.Transparent.compositeOver(
+                                                    MaterialTheme.colorScheme.onSecondaryContainer
+                                                )
+                                            )
+                                        }
+                                        
+                                        Spacer(modifier = Modifier.padding(10.dp))
                                     }
                                 }
                             }

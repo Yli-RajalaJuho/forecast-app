@@ -15,8 +15,11 @@ data class WeatherHourly(
     val temperature_2m: List<Double?>?,
     val apparent_temperature: List<Double?>?,
     val weather_code: List<Int?>?,
+    val cloud_cover: List<Int?>?,
+    val visibility: List<Double?>?,
     val wind_speed_10m: List<Double?>?,
     val wind_direction_10m: List<Int?>?,
+    val uv_index: List<Double?>?,
 )
 
 data class WeatherCurrent(
@@ -24,8 +27,11 @@ data class WeatherCurrent(
     val temperature_2m: Double?,
     val apparent_temperature: Double?,
     val weather_code: Int?,
+    val cloud_cover: Int?,
+    val visibility: Double?,
     val wind_speed_10m: Double?,
     val wind_direction_10m: Int?,
+    val uv_index: Double?,
 )
 
 // Class that is represented to the user
@@ -35,8 +41,11 @@ data class SimplifiedWeatherData(
     val temperature: Double,
     val apparentTemperature: Double,
     val weatherCode: WeatherCode,
+    val cloudCover: Int,
+    val visibility: Double,
     val windSpeed: Double,
     val windDirection: Int,
+    val uvIndex: Double,
 )
 
 data class WeatherCode(val code: Int, val conditions: String, val backgroundImage: Int, val weatherIcon: Int)

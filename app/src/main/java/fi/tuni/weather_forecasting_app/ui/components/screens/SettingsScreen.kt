@@ -62,6 +62,21 @@ fun SettingsScreen(
         weatherDataViewModel.setWindSpeedUnit(windSpeedUnit)
     }
 
+    // Color scheme for radio buttons
+    val radioButtonColors = RadioButtonColors(
+        selectedColor = Color.Transparent.compositeOver(
+            MaterialTheme.colorScheme.onPrimary
+        ),
+        unselectedColor = Color.Transparent.compositeOver(
+            MaterialTheme.colorScheme.onPrimary
+        ).copy(alpha = 0.5f),
+        disabledSelectedColor = Color.Transparent.compositeOver(
+            MaterialTheme.colorScheme.onPrimary
+        ),
+        disabledUnselectedColor = Color.Transparent.compositeOver(
+            MaterialTheme.colorScheme.onPrimary
+        )
+    )
 
     // Remember the currently expanded item index
     var expandedItem by remember { mutableStateOf("") }
@@ -95,13 +110,10 @@ fun SettingsScreen(
                         shape = RoundedCornerShape(20.dp),
                         color = Color.Transparent.compositeOver(
                             MaterialTheme.colorScheme.secondary
-                        )
+                        ).copy(alpha = 0.1f)
                     )
                 ) {
-                    Column(
-                        modifier = Modifier.padding(20.dp),
-                        //horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+                    Column(modifier = Modifier.padding(20.dp),) {
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -115,7 +127,7 @@ fun SettingsScreen(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.Transparent.compositeOver(
-                                    MaterialTheme.colorScheme.onSecondary
+                                    MaterialTheme.colorScheme.onPrimary
                                 )
                             )
 
@@ -129,7 +141,7 @@ fun SettingsScreen(
                                     },
                                     fontSize = 16.sp,
                                     color = Color.Transparent.compositeOver(
-                                        MaterialTheme.colorScheme.onSecondary
+                                        MaterialTheme.colorScheme.onPrimary
                                     )
                                 )
                             }
@@ -138,7 +150,7 @@ fun SettingsScreen(
                         HorizontalDivider(
                             modifier = Modifier.padding(10.dp),
                             color = Color.Transparent.compositeOver(
-                                MaterialTheme.colorScheme.onSecondary
+                                MaterialTheme.colorScheme.onPrimary
                             )
                         )
 
@@ -157,27 +169,14 @@ fun SettingsScreen(
                                         text = "Default",
                                         fontWeight = FontWeight.Bold,
                                         color = Color.Transparent.compositeOver(
-                                            MaterialTheme.colorScheme.onSecondary
+                                            MaterialTheme.colorScheme.onPrimary
                                         )
                                     )
 
                                     RadioButton(
                                         selected = theme == "default",
                                         onClick = { settings.setTheme("default") },
-                                        colors = RadioButtonColors(
-                                            selectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ),
-                                            unselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ).copy(alpha = 0.5f),
-                                            disabledSelectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ),
-                                            disabledUnselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            )
-                                        )
+                                        colors = radioButtonColors
                                     )
                                 }
 
@@ -189,27 +188,14 @@ fun SettingsScreen(
                                         text = "Light",
                                         fontWeight = FontWeight.Bold,
                                         color = Color.Transparent.compositeOver(
-                                            MaterialTheme.colorScheme.onSecondary
+                                            MaterialTheme.colorScheme.onPrimary
                                         )
                                     )
 
                                     RadioButton(
                                         selected = theme == "light",
                                         onClick = { settings.setTheme("light") },
-                                        colors = RadioButtonColors(
-                                            selectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ),
-                                            unselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ).copy(alpha = 0.5f),
-                                            disabledSelectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ),
-                                            disabledUnselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            )
-                                        )
+                                        colors = radioButtonColors
                                     )
                                 }
 
@@ -221,27 +207,14 @@ fun SettingsScreen(
                                         text = "Dark",
                                         fontWeight = FontWeight.Bold,
                                         color = Color.Transparent.compositeOver(
-                                            MaterialTheme.colorScheme.onSecondary
+                                            MaterialTheme.colorScheme.onPrimary
                                         )
                                     )
 
                                     RadioButton(
                                         selected = theme == "dark",
                                         onClick = { settings.setTheme("dark") },
-                                        colors = RadioButtonColors(
-                                            selectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ),
-                                            unselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ).copy(alpha = 0.5f),
-                                            disabledSelectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ),
-                                            disabledUnselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            )
-                                        )
+                                        colors = radioButtonColors
                                     )
                                 }
                             }
@@ -251,7 +224,7 @@ fun SettingsScreen(
                                 text = "(Default is the device's current theme.)",
                                 fontSize = 12.sp,
                                 color = Color.Transparent.compositeOver(
-                                    MaterialTheme.colorScheme.onSecondary
+                                    MaterialTheme.colorScheme.onPrimary
                                 )
                             )
                         }
@@ -271,13 +244,11 @@ fun SettingsScreen(
                     .background(
                         shape = RoundedCornerShape(20.dp),
                         color = Color.Transparent.compositeOver(
-                            MaterialTheme.colorScheme.secondary)
+                            MaterialTheme.colorScheme.secondary
+                        ).copy(alpha = 0.1f)
                     )
                 ) {
-                    Column(
-                        modifier = Modifier.padding(20.dp),
-                        //horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+                    Column(modifier = Modifier.padding(20.dp),) {
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -291,7 +262,7 @@ fun SettingsScreen(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.Transparent.compositeOver(
-                                    MaterialTheme.colorScheme.onSecondary
+                                    MaterialTheme.colorScheme.onPrimary
                                 )
                             )
 
@@ -305,7 +276,7 @@ fun SettingsScreen(
                                     },
                                     fontSize = 16.sp,
                                     color = Color.Transparent.compositeOver(
-                                        MaterialTheme.colorScheme.onSecondary
+                                        MaterialTheme.colorScheme.onPrimary
                                     )
                                 )
                             }
@@ -314,7 +285,7 @@ fun SettingsScreen(
                         HorizontalDivider(
                             modifier = Modifier.padding(10.dp),
                             color = Color.Transparent.compositeOver(
-                                MaterialTheme.colorScheme.onSecondary
+                                MaterialTheme.colorScheme.onPrimary
                             )
                         )
 
@@ -333,27 +304,14 @@ fun SettingsScreen(
                                         text = "Celsius (°C)",
                                         fontWeight = FontWeight.Bold,
                                         color = Color.Transparent.compositeOver(
-                                            MaterialTheme.colorScheme.onSecondary
+                                            MaterialTheme.colorScheme.onPrimary
                                         )
                                     )
 
                                     RadioButton(
                                         selected = tempUnit == "celsius",
                                         onClick = { settings.setTemperatureUnit("celsius") },
-                                        colors = RadioButtonColors(
-                                            selectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ),
-                                            unselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ).copy(alpha = 0.5f),
-                                            disabledSelectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ),
-                                            disabledUnselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            )
-                                        )
+                                        colors = radioButtonColors
                                     )
                                 }
 
@@ -365,27 +323,14 @@ fun SettingsScreen(
                                         text = "Fahrenheit (°F)",
                                         fontWeight = FontWeight.Bold,
                                         color = Color.Transparent.compositeOver(
-                                            MaterialTheme.colorScheme.onSecondary
+                                            MaterialTheme.colorScheme.onPrimary
                                         )
                                     )
 
                                     RadioButton(
                                         selected = tempUnit == "fahrenheit",
                                         onClick = { settings.setTemperatureUnit("fahrenheit") },
-                                        colors = RadioButtonColors(
-                                            selectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ),
-                                            unselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ).copy(alpha = 0.5f),
-                                            disabledSelectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ),
-                                            disabledUnselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            )
-                                        )
+                                        colors = radioButtonColors
                                     )
                                 }
                             }
@@ -405,13 +350,11 @@ fun SettingsScreen(
                     .background(
                         shape = RoundedCornerShape(20.dp),
                         color = Color.Transparent.compositeOver(
-                            MaterialTheme.colorScheme.secondary)
+                            MaterialTheme.colorScheme.secondary
+                        ).copy(alpha = 0.1f)
                     )
                 ) {
-                    Column(
-                        modifier = Modifier.padding(20.dp),
-                        //horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+                    Column(modifier = Modifier.padding(20.dp),) {
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -425,7 +368,7 @@ fun SettingsScreen(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.Transparent.compositeOver(
-                                    MaterialTheme.colorScheme.onSecondary
+                                    MaterialTheme.colorScheme.onPrimary
                                 )
                             )
 
@@ -435,7 +378,7 @@ fun SettingsScreen(
                                     text = windSpeedUnit,
                                     fontSize = 16.sp,
                                     color = Color.Transparent.compositeOver(
-                                        MaterialTheme.colorScheme.onSecondary
+                                        MaterialTheme.colorScheme.onPrimary
                                     )
                                 )
                             }
@@ -444,7 +387,7 @@ fun SettingsScreen(
                         HorizontalDivider(
                             modifier = Modifier.padding(10.dp),
                             color = Color.Transparent.compositeOver(
-                                MaterialTheme.colorScheme.onSecondary
+                                MaterialTheme.colorScheme.onPrimary
                             )
                         )
 
@@ -463,27 +406,14 @@ fun SettingsScreen(
                                         text = "m/s",
                                         fontWeight = FontWeight.Bold,
                                         color = Color.Transparent.compositeOver(
-                                            MaterialTheme.colorScheme.onSecondary
+                                            MaterialTheme.colorScheme.onPrimary
                                         )
                                     )
 
                                     RadioButton(
                                         selected = windSpeedUnit == "ms",
                                         onClick = { settings.setWindSpeedUnit("ms") },
-                                        colors = RadioButtonColors(
-                                            selectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ),
-                                            unselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ).copy(alpha = 0.5f),
-                                            disabledSelectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ),
-                                            disabledUnselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            )
-                                        )
+                                        colors = radioButtonColors
                                     )
                                 }
 
@@ -495,27 +425,14 @@ fun SettingsScreen(
                                         text = "mph",
                                         fontWeight = FontWeight.Bold,
                                         color = Color.Transparent.compositeOver(
-                                            MaterialTheme.colorScheme.onSecondary
+                                            MaterialTheme.colorScheme.onPrimary
                                         )
                                     )
 
                                     RadioButton(
                                         selected = windSpeedUnit == "mph",
                                         onClick = { settings.setWindSpeedUnit("mph") },
-                                        colors = RadioButtonColors(
-                                            selectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ),
-                                            unselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ).copy(alpha = 0.5f),
-                                            disabledSelectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            ),
-                                            disabledUnselectedColor = Color.Transparent.compositeOver(
-                                                MaterialTheme.colorScheme.onSecondary
-                                            )
-                                        )
+                                        colors = radioButtonColors
                                     )
                                 }
                             }

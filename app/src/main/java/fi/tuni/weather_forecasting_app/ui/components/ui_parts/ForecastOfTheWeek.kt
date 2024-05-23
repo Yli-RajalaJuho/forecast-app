@@ -142,8 +142,9 @@ fun ForecastOfTheWeek(
                                 modifier = Modifier
                                     .clip(shape = RoundedCornerShape(20.dp))
                                     .background(color = Color.Transparent
-                                        .compositeOver(MaterialTheme.colorScheme.tertiary)
-                                    )
+                                        .compositeOver(MaterialTheme.colorScheme.tertiary
+                                    ).copy(alpha = 0.1f)
+                                )
                             ) {
                                 // date
                                 Text(
@@ -152,7 +153,7 @@ fun ForecastOfTheWeek(
                                     modifier = Modifier.fillMaxWidth(),
                                     textAlign = TextAlign.Center,
                                     color = Color.Transparent
-                                        .compositeOver(MaterialTheme.colorScheme.onTertiary)
+                                        .compositeOver(MaterialTheme.colorScheme.onPrimaryContainer)
                                 )
                             }
                         } else {

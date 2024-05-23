@@ -136,9 +136,9 @@ fun WeekSelector(navController: NavController) {
                             modifier = Modifier
                                 .clip(shape = RoundedCornerShape(20.dp))
                                 .background(color = Color.Transparent.compositeOver(
-                                    MaterialTheme.colorScheme.secondary)
-                                        .copy(alpha = 0.1f)
-                                )
+                                    MaterialTheme.colorScheme.tertiary
+                                ).copy(alpha = 0.1f)
+                            )
                         ) {
                             Text(
                                 text = "show forecast",

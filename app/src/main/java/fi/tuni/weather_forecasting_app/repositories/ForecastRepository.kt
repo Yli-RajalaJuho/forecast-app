@@ -75,8 +75,11 @@ object ForecastRepository {
         val temperature: Double? = weatherData?.temperature_2m
         val apparentTemperature: Double? = weatherData?.apparent_temperature
         val responseWeatherCode: Int? = weatherData?.weather_code
+        val cloudCover: Int? = weatherData?.cloud_cover
+        val visibility: Double? = weatherData?.visibility
         val windSpeed: Double? = weatherData?.wind_speed_10m
         val windDirection: Int? = weatherData?.wind_direction_10m
+        val uvIndex: Double? = weatherData?.uv_index
 
         // If there is no data from the api then return null
         if (weatherData != null) {
@@ -112,8 +115,11 @@ object ForecastRepository {
                 temperature = temperature ?: 0.0, // replace null
                 apparentTemperature = apparentTemperature ?: 0.0, // replace null
                 weatherCode = weatherCode ?: initialWeatherCodes[0], // no data weather code
+                cloudCover = cloudCover ?: 0, // replace null
+                visibility = visibility ?: 0.0, // replace null
                 windSpeed = windSpeed ?: 0.0, // replace null
-                windDirection = windDirection ?: 0 // replace null
+                windDirection = windDirection ?: 0, // replace null
+                uvIndex = uvIndex ?: 0.0, // replace null
             )
         }
 
@@ -127,8 +133,11 @@ object ForecastRepository {
         val temperatures: List<Double?>? = weatherData?.temperature_2m
         val apparentTemperatures: List<Double?>? = weatherData?.apparent_temperature
         val weatherCodes: List<Int?>? = weatherData?.weather_code
+        val cloudCovers: List<Int?>? = weatherData?.cloud_cover
+        val visibilities: List<Double?>? = weatherData?.visibility
         val windSpeeds: List<Double?>? = weatherData?.wind_speed_10m
         val windDirections: List<Int?>? = weatherData?.wind_direction_10m
+        val uvIndexes: List<Double?>? = weatherData?.uv_index
 
         // Try catch block to avoid out of bounds exception
         // in case the weather data holds lists that differ in length
@@ -165,8 +174,11 @@ object ForecastRepository {
                                 temperature = temperatures?.get(i) ?: 0.0, // replace null
                                 apparentTemperature = apparentTemperatures?.get(i) ?: 0.0, // replace null
                                 weatherCode = weatherCode ?: initialWeatherCodes[0], // no data weather code object
+                                cloudCover = cloudCovers?.get(i) ?: 0, // replace null
+                                visibility = visibilities?.get(i) ?: 0.0, // replace null
                                 windSpeed = windSpeeds?.get(i) ?: 0.0, // replace null
                                 windDirection = windDirections?.get(i) ?: 0, // replace null
+                                uvIndex = uvIndexes?.get(i) ?: 0.0, // replace null
                             )
                         )
                     }
