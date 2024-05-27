@@ -51,6 +51,7 @@ fun SettingsScreen(
     val theme by settings.theme.collectAsState()
     val tempUnit by settings.temperatureUnit.collectAsState()
     val windSpeedUnit by settings.windSpeedUnit.collectAsState()
+    val precipitationUnit by settings.precipitationUnit.collectAsState()
 
     // Observe changes in temperature unit and update WeatherDataViewModel
     LaunchedEffect(tempUnit) {
@@ -60,6 +61,11 @@ fun SettingsScreen(
     // Observe changes in wind speed unit and update WeatherDataViewModel
     LaunchedEffect(windSpeedUnit) {
         weatherDataViewModel.setWindSpeedUnit(windSpeedUnit)
+    }
+
+    // Observe changes in precipitation unit and update WeatherDataViewModel
+    LaunchedEffect(precipitationUnit) {
+        weatherDataViewModel.setPrecipitationUnit(precipitationUnit)
     }
 
     // Color scheme for radio buttons
@@ -432,6 +438,108 @@ fun SettingsScreen(
                                     RadioButton(
                                         selected = windSpeedUnit == "mph",
                                         onClick = { settings.setWindSpeedUnit("mph") },
+                                        colors = radioButtonColors
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Precipitation unit control
+            item {
+                Box(modifier = Modifier
+                    .padding(top = 20.dp, start = 10.dp, end = 10.dp)
+                    .fillMaxWidth()
+                    .clickable {
+                        expandedItem = if (expandedItem == "precipitationUnit") "" else "precipitationUnit"
+                    }
+                    .background(
+                        shape = RoundedCornerShape(20.dp),
+                        color = Color.Transparent.compositeOver(
+                            MaterialTheme.colorScheme.secondary
+                        ).copy(alpha = 0.1f)
+                    )
+                ) {
+                    Column(modifier = Modifier.padding(20.dp),) {
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .padding(start = 20.dp)
+                                    .weight(1f),
+                                text = "Distance",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Transparent.compositeOver(
+                                    MaterialTheme.colorScheme.onPrimary
+                                )
+                            )
+
+                            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                                Text(
+                                    modifier = Modifier.align(Alignment.Center),
+                                    text = if (precipitationUnit == "mm") "km" else "miles",
+                                    fontSize = 16.sp,
+                                    color = Color.Transparent.compositeOver(
+                                        MaterialTheme.colorScheme.onPrimary
+                                    )
+                                )
+                            }
+                        }
+
+                        HorizontalDivider(
+                            modifier = Modifier.padding(10.dp),
+                            color = Color.Transparent.compositeOver(
+                                MaterialTheme.colorScheme.onPrimary
+                            )
+                        )
+
+                        if (expandedItem == "precipitationUnit") {
+
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+
+                                Column(
+                                    modifier = Modifier.weight(1f),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = "km", // metric
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Transparent.compositeOver(
+                                            MaterialTheme.colorScheme.onPrimary
+                                        )
+                                    )
+
+                                    RadioButton(
+                                        selected = precipitationUnit == "mm",
+                                        onClick = { settings.setPrecipitationUnit("mm") },
+                                        colors = radioButtonColors
+                                    )
+                                }
+
+                                Column(
+                                    modifier = Modifier.weight(1f),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = "miles", // imperial
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Transparent.compositeOver(
+                                            MaterialTheme.colorScheme.onPrimary
+                                        )
+                                    )
+
+                                    RadioButton(
+                                        selected = precipitationUnit == "inch",
+                                        onClick = { settings.setPrecipitationUnit("inch") },
                                         colors = radioButtonColors
                                     )
                                 }

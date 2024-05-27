@@ -18,6 +18,7 @@ class PreferencesManager(context: Context) {
         val THEME_MODE_KEY = stringPreferencesKey("THEME_MODE")
         val TEMPERATURE_UNIT_KEY = stringPreferencesKey("TEMPERATURE_UNIT")
         val WIND_SPEED_UNIT_KEY = stringPreferencesKey("WIND_SPEED_UNIT")
+        val PRECIPITATION_UNIT_KEY = stringPreferencesKey("PRECIPITATION_UNIT")
     }
 
     val themeModeFlow: Flow<String> = dataStore.data.map { preferences ->
@@ -30,6 +31,10 @@ class PreferencesManager(context: Context) {
 
     val windSpeedUnitFlow: Flow<String> = dataStore.data.map { preferences ->
         preferences[WIND_SPEED_UNIT_KEY] ?: "ms"
+    }
+
+    val precipitationUnitFlow: Flow<String> = dataStore.data.map { preferences ->
+        preferences[PRECIPITATION_UNIT_KEY] ?: "mm"
     }
 
     suspend fun saveThemeMode(themeMode: String) {
@@ -47,6 +52,12 @@ class PreferencesManager(context: Context) {
     suspend fun saveWindSpeedUnit(windSpeedUnit: String) {
         dataStore.edit { preferences ->
             preferences[WIND_SPEED_UNIT_KEY] = windSpeedUnit
+        }
+    }
+
+    suspend fun savePrecipitationUnit(precipitationUnit: String) {
+        dataStore.edit { preferences ->
+            preferences[PRECIPITATION_UNIT_KEY] = precipitationUnit
         }
     }
 }

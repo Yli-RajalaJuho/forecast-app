@@ -435,10 +435,13 @@ fun ForecastOfTheDay(
                                                 )
                                             )
 
-                                            // Visibility converted to km
+                                            // Visibility converted to km or miles
                                             Text(
                                                 modifier = Modifier.weight(1f),
-                                                text = "${hourlyData[it].visibility * 0.001} km",
+                                                text =
+                                                if (forecastViewModel.precipitationUnit.value == "mm")
+                                                    "${String.format("%.2f", hourlyData[it].visibility * 0.001)} km"
+                                                else "${String.format("%.2f", hourlyData[it].visibility * 0.0001894)} mi",
                                                 textAlign = TextAlign.Start,
                                                 fontSize = 12.sp,
                                                 color = Color.Transparent.compositeOver(

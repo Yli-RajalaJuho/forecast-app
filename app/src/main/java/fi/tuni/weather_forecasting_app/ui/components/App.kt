@@ -66,6 +66,7 @@ fun App(settings: SettingsViewModel) {
 
     val tempUnit by settings.temperatureUnit.collectAsState()
     val windSpeedUnit by settings.windSpeedUnit.collectAsState()
+    val precipitationUnit by settings.precipitationUnit.collectAsState()
 
     if (weatherDataViewModel.tempUnit.value != tempUnit) {
         weatherDataViewModel.setTemperatureUnit(tempUnit)
@@ -73,6 +74,10 @@ fun App(settings: SettingsViewModel) {
 
     if (weatherDataViewModel.windSpeedUnit.value != windSpeedUnit) {
         weatherDataViewModel.setWindSpeedUnit(windSpeedUnit)
+    }
+
+    if (weatherDataViewModel.precipitationUnit.value != precipitationUnit) {
+        weatherDataViewModel.setPrecipitationUnit(precipitationUnit)
     }
 
 

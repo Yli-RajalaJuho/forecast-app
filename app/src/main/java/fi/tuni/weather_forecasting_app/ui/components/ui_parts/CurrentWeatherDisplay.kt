@@ -467,7 +467,10 @@ fun CurrentWeatherDisplay(weatherDataViewModel: WeatherDataViewModel) {
 
                                 // visibility in converted to km
                                 Text(
-                                    text = "${currentData.visibility * 0.001} km",
+                                    text =
+                                    if (weatherDataViewModel.precipitationUnit.value == "mm")
+                                        "${String.format("%.2f", currentData.visibility * 0.001)} km"
+                                    else "${String.format("%.2f", currentData.visibility * 0.0001894)} mi",
                                     modifier = Modifier
                                         .weight(1f)
                                         .fillMaxWidth()

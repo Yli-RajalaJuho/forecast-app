@@ -28,6 +28,7 @@ interface WeatherApiService {
         @Query("forecast_days") forecast: Int,
         @Query("temperature_unit") temperatureUnit: String,
         @Query("wind_speed_unit") windSpeedUnit: String,
+        @Query("precipitation_unit") precipitationUnit: String,
     ): WeatherDataResponse
 }
 
@@ -54,6 +55,7 @@ object ForecastRepository {
         forecast: Int,
         temperatureUnit: String,
         windSpeedUnit: String,
+        precipitationUnit: String,
     ): WeatherDataResponse {
 
         return service.getWeatherForecast(
@@ -64,7 +66,8 @@ object ForecastRepository {
             past,
             forecast,
             temperatureUnit,
-            windSpeedUnit
+            windSpeedUnit,
+            precipitationUnit
         )
     }
 

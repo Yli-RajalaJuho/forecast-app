@@ -25,6 +25,10 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
     private val _windSpeedUnit = MutableStateFlow("ms")
     val windSpeedUnit = _windSpeedUnit
 
+    // Precipitation unit
+    private val _precipitationUnit = MutableStateFlow("mm")
+    val precipitationUnit = _precipitationUnit
+
     // Method to update the theme mode in the DataStore
     fun setTheme(newTheme: String) {
         viewModelScope.launch {
@@ -43,6 +47,13 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
     fun setWindSpeedUnit(newUnit: String) {
         viewModelScope.launch {
             preferencesManager.saveWindSpeedUnit(newUnit)
+        }
+    }
+
+    // Method to update the precipitation unit in the DataStore
+    fun setPrecipitationUnit(newUnit: String) {
+        viewModelScope.launch {
+            preferencesManager.savePrecipitationUnit(newUnit)
         }
     }
 
@@ -68,6 +79,14 @@ class SettingsViewModel(application: Application): AndroidViewModel(application)
 
             preferencesManager.windSpeedUnitFlow.collect { windSpeedUnit ->
                 _windSpeedUnit.value = windSpeedUnit
+            }
+        }
+
+        // Observe changes in precipitation unit and update the StateFlow
+        viewModelScope.launch {
+
+            preferencesManager.precipitationUnitFlow.collect { precipitationUnit ->
+                _precipitationUnit.value = precipitationUnit
             }
         }
     }

@@ -41,6 +41,10 @@ class WeatherDataViewModel(application: Application): AndroidViewModel(applicati
     private val _windSpeedUnit: MutableState<String> = mutableStateOf("ms")
     val windSpeedUnit: MutableState<String> get() = _windSpeedUnit
 
+    // Precipitation unit
+    private val _precipitationUnit: MutableState<String> = mutableStateOf("mm")
+    val precipitationUnit: MutableState<String> get() = _precipitationUnit
+
     // What current data to fetch
     private val _initialCurrentFetch =
         "temperature_2m,apparent_temperature,weather_code,cloud_cover,visibility,wind_speed_10m,wind_direction_10m,uv_index"
@@ -55,14 +59,26 @@ class WeatherDataViewModel(application: Application): AndroidViewModel(applicati
 
     // Change the temperature unit
     fun setTemperatureUnit(newUnit: String) {
-        _tempUnit.value = newUnit
-        refreshWeatherData()
+        if (newUnit != _tempUnit.value) {
+            _tempUnit.value = newUnit
+            refreshWeatherData()
+        }
     }
 
     // Change the wind speed unit
     fun setWindSpeedUnit(newUnit: String) {
-        _windSpeedUnit.value = newUnit
-        refreshWeatherData()
+        if (newUnit != _windSpeedUnit.value) {
+            _windSpeedUnit.value = newUnit
+            refreshWeatherData()
+        }
+    }
+
+    // Change the precipitation unit
+    fun setPrecipitationUnit(newUnit: String) {
+        if (newUnit != _precipitationUnit.value) {
+            _precipitationUnit.value = newUnit
+            refreshWeatherData()
+        }
     }
 
     // Returns a list generated from the forecastData based on given date
@@ -109,6 +125,7 @@ class WeatherDataViewModel(application: Application): AndroidViewModel(applicati
                     14,
                     temperatureUnit = tempUnit.value,
                     windSpeedUnit = windSpeedUnit.value,
+                    precipitationUnit = precipitationUnit.value
                 )
 
                 _forecastData.value = ForecastRepository.generateSimplifiedHourlyData(response.hourly)
