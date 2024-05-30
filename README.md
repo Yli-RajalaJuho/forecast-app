@@ -1,2 +1,3 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/yzg6oRFh)
-# jetpack-compose-template
+# Forecast Application
+
+This application uses the current location of the user to fetch weather information from https://open-meteo.com and display it to the user in simple terms.
