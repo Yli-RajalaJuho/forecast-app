@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.text.font.FontWeight
@@ -109,11 +110,11 @@ fun SettingsScreen(
                 Box(modifier = Modifier
                     .padding(top = 20.dp, start = 10.dp, end = 10.dp)
                     .fillMaxWidth()
+                    .clip(shape = RoundedCornerShape(20.dp))
                     .clickable {
                         expandedItem = if (expandedItem == "theme") "" else "theme"
                     }
                     .background(
-                        shape = RoundedCornerShape(20.dp),
                         color = Color.Transparent.compositeOver(
                             MaterialTheme.colorScheme.secondary
                         ).copy(alpha = 0.1f)
@@ -243,12 +244,12 @@ fun SettingsScreen(
                 Box(modifier = Modifier
                     .padding(top = 20.dp, start = 10.dp, end = 10.dp)
                     .fillMaxWidth()
+                    .clip(shape = RoundedCornerShape(20.dp))
                     .clickable {
                         expandedItem =
                             if (expandedItem == "temperatureUnit") "" else "temperatureUnit"
                     }
                     .background(
-                        shape = RoundedCornerShape(20.dp),
                         color = Color.Transparent.compositeOver(
                             MaterialTheme.colorScheme.secondary
                         ).copy(alpha = 0.1f)
@@ -350,11 +351,11 @@ fun SettingsScreen(
                 Box(modifier = Modifier
                     .padding(top = 20.dp, start = 10.dp, end = 10.dp)
                     .fillMaxWidth()
+                    .clip(shape = RoundedCornerShape(20.dp))
                     .clickable {
                         expandedItem = if (expandedItem == "windSpeedUnit") "" else "windSpeedUnit"
                     }
                     .background(
-                        shape = RoundedCornerShape(20.dp),
                         color = Color.Transparent.compositeOver(
                             MaterialTheme.colorScheme.secondary
                         ).copy(alpha = 0.1f)
@@ -452,11 +453,11 @@ fun SettingsScreen(
                 Box(modifier = Modifier
                     .padding(top = 20.dp, start = 10.dp, end = 10.dp)
                     .fillMaxWidth()
+                    .clip(shape = RoundedCornerShape(20.dp))
                     .clickable {
                         expandedItem = if (expandedItem == "precipitationUnit") "" else "precipitationUnit"
                     }
                     .background(
-                        shape = RoundedCornerShape(20.dp),
                         color = Color.Transparent.compositeOver(
                             MaterialTheme.colorScheme.secondary
                         ).copy(alpha = 0.1f)

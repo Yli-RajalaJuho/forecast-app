@@ -17,10 +17,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            // Place the settings viewmodel on top of everything and pass it around the app
             val settings: SettingsViewModel = viewModel()
 
             Weather_forecasting_appTheme(settings) {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

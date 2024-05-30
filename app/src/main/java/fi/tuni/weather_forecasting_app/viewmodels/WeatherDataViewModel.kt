@@ -112,24 +112,27 @@ class WeatherDataViewModel(application: Application): AndroidViewModel(applicati
         _isRefreshing.value = true
 
         viewModelScope.launch {
-            val currentLocation: Location = fetchLocation()
+
+            val currentLocation: Location? = fetchLocation()
 
             try {
-                // fetch data with the location
-                val response = ForecastRepository.service.getWeatherForecast(
-                    currentLocation.latitude,
-                    currentLocation.longitude,
-                    _currentDataToFetch.value ?: _initialCurrentFetch,
-                    _hourlyDataToFetch.value ?: _initialHourlyFetch,
-                    14,
-                    14,
-                    temperatureUnit = tempUnit.value,
-                    windSpeedUnit = windSpeedUnit.value,
-                    precipitationUnit = precipitationUnit.value
-                )
+                if (currentLocation != null) {
+                    // fetch data with the location
+                    val response = ForecastRepository.service.getWeatherForecast(
+                        currentLocation.latitude,
+                        currentLocation.longitude,
+                        _currentDataToFetch.value ?: _initialCurrentFetch,
+                        _hourlyDataToFetch.value ?: _initialHourlyFetch,
+                        14,
+                        14,
+                        temperatureUnit = tempUnit.value,
+                        windSpeedUnit = windSpeedUnit.value,
+                        precipitationUnit = precipitationUnit.value
+                    )
 
-                _forecastData.value = ForecastRepository.generateSimplifiedHourlyData(response.hourly)
-                _currentWeatherData.value = ForecastRepository.generateSimplifiedCurrentData(response.current)
+                    _forecastData.value = ForecastRepository.generateSimplifiedHourlyData(response.hourly)
+                    _currentWeatherData.value = ForecastRepository.generateSimplifiedCurrentData(response.current)
+                }
 
             } catch (e: HttpException) {
                 Log.d("HTTP ERROR", e.response()?.errorBody()?.string() ?: "")
@@ -140,9 +143,9 @@ class WeatherDataViewModel(application: Application): AndroidViewModel(applicati
         }
     }
 
-    private suspend fun fetchLocation(): Location {
+    private suspend fun fetchLocation(): Location? {
         return withContext(Dispatchers.Default) {
-            val currentLocationDeferred = CompletableDeferred<Location>()
+            val currentLocationDeferred = CompletableDeferred<Location?>()
 
             viewModelScope.launch {
                 try {
@@ -154,16 +157,11 @@ class WeatherDataViewModel(application: Application): AndroidViewModel(applicati
                     }
                 } catch (e: LocationClient.LocationException) {
                     e.message?.let { Log.d("LOCATION ERROR", it) }
-                    currentLocationDeferred.completeExceptionally(e)
+                    currentLocationDeferred.complete(null)
                 }
             }
 
             currentLocationDeferred.await()
         }
-    }
-
-    init {
-        // Initial weather based on current location
-        refreshWeatherData()
     }
 }

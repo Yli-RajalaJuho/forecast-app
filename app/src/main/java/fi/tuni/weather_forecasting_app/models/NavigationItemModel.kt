@@ -27,11 +27,11 @@ data class NavigationItems(
             route = "home-screen"
         ),
         NavigationItem(
-            title = "Forecast previous week",
+            title = "Forecast next week",
             selectedIcon = Icons.Filled.Info,
             unselectedIcon = Icons.Outlined.Info,
-            route = "weeks-weather-screen/Previous",
-            weekInfo = "Previous"
+            route = "weeks-weather-screen/Next",
+            weekInfo = "Next"
         ),
         NavigationItem(
             title = "Forecast current week",
@@ -41,11 +41,11 @@ data class NavigationItems(
             weekInfo = "Current"
         ),
         NavigationItem(
-            title = "Forecast next week",
+            title = "Forecast previous week",
             selectedIcon = Icons.Filled.Info,
             unselectedIcon = Icons.Outlined.Info,
-            route = "weeks-weather-screen/Next",
-            weekInfo = "Next"
+            route = "weeks-weather-screen/Previous",
+            weekInfo = "Previous"
         ),
         NavigationItem(
             title = "Settings",

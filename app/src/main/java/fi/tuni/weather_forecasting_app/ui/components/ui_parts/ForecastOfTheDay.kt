@@ -105,11 +105,48 @@ fun ForecastOfTheDay(
     if (hourlyData.isEmpty()) {
         if (!isRefreshing.value) {
             // show no data
-            Text(
-                text = "No Weather Data Available",
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center
-            )
+            Box(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 20.dp)
+                        .background(
+                            shape = RoundedCornerShape(20.dp),
+                            color = Color.Transparent
+                                .compositeOver(
+                                    MaterialTheme.colorScheme.secondaryContainer
+                                )
+                                .copy(alpha = 0.5f)
+                        ),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = "No Weather Data Available",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        textAlign = TextAlign.Start,
+                        fontSize = 14.sp,
+                        color = Color.Transparent
+                            .compositeOver(
+                                MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                    )
+
+                    Text(
+                        text = "Please check internet connectivity and allow permissions for location updates and launch the app again.",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        textAlign = TextAlign.Start,
+                        fontSize = 14.sp,
+                        color = Color.Transparent
+                            .compositeOver(
+                                MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                    )
+                }
+            }
         }
     } else {
         Box(modifier = Modifier.alpha(opacity)) {

@@ -21,18 +21,22 @@ class PreferencesManager(context: Context) {
         val PRECIPITATION_UNIT_KEY = stringPreferencesKey("PRECIPITATION_UNIT")
     }
 
+    // Theme
     val themeModeFlow: Flow<String> = dataStore.data.map { preferences ->
         preferences[THEME_MODE_KEY] ?: "default"
     }
 
+    // Temperature unit
     val temperatureUnitFlow: Flow<String> = dataStore.data.map { preferences ->
         preferences[TEMPERATURE_UNIT_KEY] ?: "celsius"
     }
 
+    // Wind speed unit
     val windSpeedUnitFlow: Flow<String> = dataStore.data.map { preferences ->
         preferences[WIND_SPEED_UNIT_KEY] ?: "ms"
     }
 
+    // Precipitation unit
     val precipitationUnitFlow: Flow<String> = dataStore.data.map { preferences ->
         preferences[PRECIPITATION_UNIT_KEY] ?: "mm"
     }

@@ -35,7 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.graphicsLayer
@@ -49,8 +49,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fi.tuni.weather_forecasting_app.R
 import fi.tuni.weather_forecasting_app.viewmodels.WeatherDataViewModel
-import kotlinx.coroutines.delay
-import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -96,11 +94,48 @@ fun CurrentWeatherDisplay(weatherDataViewModel: WeatherDataViewModel) {
     if (currentData == null) {
         if (!isRefreshing.value) {
             // show no data
-            Text(
-                text = "No Weather Data Available",
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center
-            )
+            Box(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 20.dp)
+                        .background(
+                            shape = RoundedCornerShape(20.dp),
+                            color = Color.Transparent
+                                .compositeOver(
+                                    MaterialTheme.colorScheme.secondaryContainer
+                                )
+                                .copy(alpha = infoBoxAlpha)
+                        ),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = "No Weather Data Available",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        textAlign = TextAlign.Start,
+                        fontSize = 14.sp,
+                        color = Color.Transparent
+                            .compositeOver(
+                                MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                    )
+
+                    Text(
+                        text = "Please check internet connectivity and allow permissions for location updates and launch the app again.",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        textAlign = TextAlign.Start,
+                        fontSize = 14.sp,
+                        color = Color.Transparent
+                            .compositeOver(
+                                MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                    )
+                }
+            }
         }
 
     } else {
@@ -209,11 +244,11 @@ fun CurrentWeatherDisplay(weatherDataViewModel: WeatherDataViewModel) {
                         Text(
                             text = currentData.weatherCode.conditions,
                             modifier = Modifier
-                                .weight(1f)
+                                .weight(2f)
                                 .fillMaxWidth()
                                 .align(alignment = Alignment.CenterVertically)
-                                .padding(vertical = 20.dp),
-                            textAlign = TextAlign.Center,
+                                .padding(start = 20.dp),
+                            textAlign = TextAlign.Start,
                             fontSize = 24.sp,
                             color = Color.Transparent.compositeOver(
                                 MaterialTheme.colorScheme.onSecondaryContainer)
@@ -238,13 +273,13 @@ fun CurrentWeatherDisplay(weatherDataViewModel: WeatherDataViewModel) {
                 item {
 
                     Column(modifier = Modifier
+                        .clip(shape = RoundedCornerShape(20.dp))
                         .clickable {
                             // Toggle the expanded state
                             expandedMoreInfo = !expandedMoreInfo
                         }
                         .fillMaxWidth()
                         .background(
-                            shape = RoundedCornerShape(20.dp),
                             color = Color.Transparent
                                 .compositeOver(
                                     MaterialTheme.colorScheme.secondaryContainer
@@ -332,7 +367,9 @@ fun CurrentWeatherDisplay(weatherDataViewModel: WeatherDataViewModel) {
                                         )
                                     }
                                     
-                                    Spacer(modifier = Modifier.fillMaxWidth().padding(5.dp))
+                                    Spacer(modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(5.dp))
 
                                     // Wind direction
                                     Row {

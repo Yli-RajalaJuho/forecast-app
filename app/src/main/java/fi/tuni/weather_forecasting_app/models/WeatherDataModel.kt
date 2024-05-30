@@ -10,6 +10,7 @@ data class WeatherDataResponse(
     @SerializedName("current") val current: WeatherCurrent
 )
 
+// Forecast weather data
 data class WeatherHourly(
     val time: List<String?>?,
     val temperature_2m: List<Double?>?,
@@ -22,6 +23,7 @@ data class WeatherHourly(
     val uv_index: List<Double?>?,
 )
 
+// Current weather data
 data class WeatherCurrent(
     val time: String?,
     val temperature_2m: Double?,
@@ -51,7 +53,7 @@ data class SimplifiedWeatherData(
 data class WeatherCode(val code: Int, val conditions: String, val backgroundImage: Int, val weatherIcon: Int)
 data class WeatherCodeList(
     val weatherCodeList: List<WeatherCode> = listOf(
-        WeatherCode(code = -1, conditions = "No Data", backgroundImage = R.drawable.clear_sky, weatherIcon = R.drawable.outline_wb_sunny), //TODO replace images with no data
+        WeatherCode(code = -1, conditions = "No Data", backgroundImage = R.drawable.clear_sky, weatherIcon = R.drawable.outline_wb_sunny),
         WeatherCode(code = 0, conditions = "Clear Sky", backgroundImage = R.drawable.clear_sky, weatherIcon = R.drawable.outline_wb_sunny),
         WeatherCode(code = 1, conditions = "Mainly Clear", backgroundImage = R.drawable.partly_cloudy, weatherIcon = R.drawable.outline_partly_cloudy_day),
         WeatherCode(code = 2, conditions = "Partly Cloudy", backgroundImage = R.drawable.cloudy, weatherIcon = R.drawable.outline_partly_cloudy_day),

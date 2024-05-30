@@ -34,6 +34,7 @@ class LocationRepository(private val context: Context): LocationClient {
     }
 
     override fun startLocationUpdates(callback: (Location?) -> Unit) {
+
         if (ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION

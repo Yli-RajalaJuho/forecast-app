@@ -1,13 +1,16 @@
 package fi.tuni.weather_forecasting_app.ui.components
 
 import android.Manifest
-import android.os.Build
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,17 +25,46 @@ import fi.tuni.weather_forecasting_app.viewmodels.WeekDayViewModel
 
 @Composable
 fun App(settings: SettingsViewModel) {
+
+    val context = LocalContext.current
+
+    // Check if network is available
+    fun isNetworkAvailable(): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return when {
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+            else -> false
+        }
+    }
+
+    // Remember the view models outside of the composable
+    val weekViewModel: WeekDayViewModel = viewModel()
+    val navigationItemsViewModel: NavigationItemsViewModel = viewModel()
+    val weatherDataViewModel: WeatherDataViewModel = viewModel()
+
+
     // request permissions for the app
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
         onResult = { permissions ->
             // Check if all requested permissions have been granted
             val allPermissionsGranted = permissions.entries.all { it.value }
+
+            if (allPermissionsGranted && isNetworkAvailable()) {
+                // Permissions granted, proceed with refreshing weather data
+                weatherDataViewModel.refreshWeatherData()
+            }
         }
     )
     // Define permissions based on API level
     val permissions = mutableListOf<String>()
 
+    // For foreground service and notifications
+    /*
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         permissions.add(Manifest.permission.POST_NOTIFICATIONS)
     }
@@ -44,6 +76,7 @@ fun App(settings: SettingsViewModel) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
         permissions.add(Manifest.permission.FOREGROUND_SERVICE)
     }
+     */
 
     // Location permissions are required for all API levels
     permissions.addAll(listOf(
@@ -56,14 +89,7 @@ fun App(settings: SettingsViewModel) {
         permissionLauncher.launch(permissions.toTypedArray())
     }
 
-    val navController = rememberNavController()
-
-    // Remember the view models outside of the composable
-    val weekViewModel: WeekDayViewModel = viewModel()
-    val navigationItemsViewModel: NavigationItemsViewModel = viewModel()
-    val weatherDataViewModel: WeatherDataViewModel = viewModel()
-
-
+    // Get the settings and change the values of weather data viewmodel based on them
     val tempUnit by settings.temperatureUnit.collectAsState()
     val windSpeedUnit by settings.windSpeedUnit.collectAsState()
     val precipitationUnit by settings.precipitationUnit.collectAsState()
@@ -80,6 +106,7 @@ fun App(settings: SettingsViewModel) {
         weatherDataViewModel.setPrecipitationUnit(precipitationUnit)
     }
 
+    val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "home-screen") {
         composable("home-screen") {
@@ -95,9 +122,10 @@ fun App(settings: SettingsViewModel) {
 
         composable("weeks-weather-screen/{week}") {backStackEntry ->
 
+            // previous, current or next week
             val week = backStackEntry.arguments?.getString("week")
 
-            // Navigate to weeks weather screen with the week and the view models
+            // Navigate to weeks weather screen (forecast) with the week and the view models
             WeeksWeatherScreen(
                 settings,
                 navController,
@@ -109,7 +137,7 @@ fun App(settings: SettingsViewModel) {
         }
 
         composable("settings-screen") {
-            // Navigate to weeks weather screen with the week and the view models
+            // Navigate to settings screen
             SettingsScreen(
                 settings,
                 navController,
