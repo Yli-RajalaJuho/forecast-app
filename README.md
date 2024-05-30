@@ -4,7 +4,7 @@ This application uses the current location of the user to fetch weather informat
 
 
 ## Screen Cast
-link to screen cast: 
+link to screen cast: https://youtu.be/CYWkwlKijWY?si=EOeGqmLm_zJ45zHa
 
 
 ## Home Screen
